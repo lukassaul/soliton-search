@@ -1,0 +1,5500 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[letterpaper,margin=1in,headheight=15pt,headsep=20pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{etoolbox}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{bm}
+\usepackage[unicode,colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!45!black]{hyperref}
+\usepackage{graphicx}
+
+% Working-manuscript typography: restrained and journal-neutral.
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{0pt}
+\linespread{1.055}
+\setlength{\emergencystretch}{2em}
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+\setlist{topsep=4pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+\captionsetup{font=small,labelfont=bf,skip=7pt}
+\numberwithin{equation}{section}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small Quaternionic Spin Fluid}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{\z@}{-3.0ex plus -1ex minus -.2ex}{1.6ex plus .2ex}{\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}{-2.5ex plus -1ex minus -.2ex}{1.0ex plus .2ex}{\normalfont\large\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}{-2ex plus -.8ex minus -.2ex}{.8ex plus .2ex}{\normalfont\normalsize\bfseries}}
+\makeatother
+\AtBeginEnvironment{figure}{\centering}
+\AtBeginEnvironment{table}{\centering}
+% Figures remain buildable until the numerical plots are supplied.
+\newcommand{\manuscriptfigure}[2]{%
+  \IfFileExists{#1}{\includegraphics[width=#2\linewidth]{#1}}{%
+    \fbox{\begin{minipage}[c][1.55in][c]{.88\linewidth}\centering\small
+    Figure pending: \texttt{\detokenize{#1}}\\[5pt]
+    \emph{Insert generated numerical graphic here.}
+    \end{minipage}}}}
+\overfullrule=0pt
+
+% ============================================================
+% MACROS
+% ============================================================
+\providecommand{\dd}{\mathrm{d}}
+\providecommand{\vx}{\mathbf{x}}
+\providecommand{\vp}{\mathbf{p}}
+\providecommand{\vv}{\mathbf{v}}
+\providecommand{\vu}{\mathbf{u}}
+\providecommand{\vnabla}{\bm{\nabla}}
+\providecommand{\vomega}{\bm{\omega}}
+\providecommand{\cS}{\mathcal{S}}
+\providecommand{\cQ}{\mathcal{Q}}
+\providecommand{\cP}{\mathcal{P}}
+\providecommand{\cA}{\mathcal{A}}
+\providecommand{\cC}{\mathcal{C}}
+\providecommand{\cH}{\mathcal{H}}
+\providecommand{\cM}{\mathcal{M}}
+\providecommand{\Oh}{\mathbb{O}}
+\providecommand{\Hh}{\mathbb{H}}
+\providecommand{\Rr}{\mathbb{R}}
+\providecommand{\Cc}{\mathbb{C}}
+\providecommand{\Spin}{\mathrm{Spin}}
+\providecommand{\SO}{\mathrm{SO}}
+\providecommand{\SU}{\mathrm{SU}}
+\providecommand{\Uu}{\mathrm{U}}
+\providecommand{\Panti}{P^{\mathrm{anti}}}
+
+\title{Helical Breathing Solitons on the Madelung Surface\\
+	of a Quaternionic Spin Fluid}
+\author{}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+	\begin{abstract}
+		We develop a quaternionic kinetic theory for a spin fluid of gyrons
+		--- axisymmetric rigid bodies carrying orientation, spin, and
+		position. The orientation is described by a unit quaternion, and the
+		moment hierarchy is closed with relaxation-time approximations for
+		the translational, spin, and nematic sectors. We identify a
+		constraint surface --- the Madelung surface --- on which the spin
+		amplitude and spin phase gradient satisfy equations of the Madelung
+		form, including a quantum-potential term whose coefficient is
+		calibrated to the physical value of $\hbar$. On this surface, we
+		construct a family of localized, oscillatory, helical breather
+		solutions parameterized by four free parameters. The breathers have
+		the far-field structure of an electric monopole, a magnetic dipole,
+		and a gravitational monopole. The mass spectrum is quantized by the
+		vacuum-matching boundary condition, giving $M_n = n M_1$. We
+		calibrate the model parameters against the electron mass, charge,
+		spin, magnetic moment, and the speed of light. The model reproduces
+		the observed values of these quantities by construction. The
+		gravitational constant $G$ remains a fundamental input. We discuss
+		what the model explains, what it does not, and the open problems.
+	\end{abstract}
+	
+	\tableofcontents
+\clearpage
+	
+	% ============================================================
+	\clearpage
+\part{Foundations}
+	% ============================================================
+	
+	% ------------------------------------------------------------
+	\section{Introduction}
+	\label{sec:intro}
+	% ------------------------------------------------------------
+	
+	\subsection{The gyron spin fluid}
+	
+	Continuum and kinetic theories with internal rotational degrees of
+	freedom have a long history, ranging from the Cosserat theory of
+	continua \cite{cosserat1909} and the kinetic theory of nonspherical
+	molecules \cite{curtiss1956} to micropolar \cite{eringen1966} and
+	spin hydrodynamics \cite{florkowski2018}. Such systems provide a
+	natural setting in which translational motion, intrinsic rotation,
+	vorticity, and orientational order coexist and exchange energy. They
+	also provide a useful laboratory for asking how field-like structures
+	can emerge from comparatively simple microscopic dynamics.
+	
+The gyron picture also has a distinct speculative lineage. Meno
+proposed a kinetic gyron medium \cite{meno1991,meno2000}; Saul
+studied spin waves and field analogies in kinetic space-time
+\cite{saul2003,saul2015}, and Kyriazi developed a related
+mechanical-vortex framework \cite{kyriazi2013}. These works motivate
+the analogy but do not establish the present closure or soliton
+results. In a different algebraic direction, Weng developed a
+trigintaduonion treatment of four interactions \cite{weng2025}.
+That construction employs multiple quaternionic subspaces; our
+approach instead builds quaternionic structure into the orientation
+variable of a kinetic spin fluid.
+
+In a companion paper \cite{gyron}, we developed a classical kinetic
+	theory for a spin fluid of \emph{gyrons}: point particles carrying
+	position, velocity, and intrinsic angular momentum. Collisions
+	conserve mass, momentum, total angular momentum (spin plus orbital),
+	and energy. The moment hierarchy was closed with a consistent
+	relaxation-time approximation, and the antisymmetric stress was
+	identified as the couple stress that transfers angular momentum
+	between spin and orbital sectors. We constructed a dictionary
+	mapping the spin-fluid fields onto electromagnetic and gravitational
+	analogues: spin pressure to electric potential, vorticity to
+	magnetic field, spin density to magnetization, and total energy
+	density to gravitational source. We found an exact travelling
+	helical vortex soliton with a bump (anticyclone) and hole (cyclone)
+	pair that serve as classical electron and positron analogues, with
+	equal active gravitational mass and opposite charge-like signatures.
+	In the marginal regime where the gyron thermal speed equals the
+	vortex-spin wave speed, the collective transverse dynamics acquire
+	an emergent Lorentz invariance, an emergent mass-shell condition,
+	and an emergent $CPT$ symmetry, with the speed of light identified
+	as the vortex-spin wave speed.
+	
+	\subsection{The wall: non-abelian gauge structure and generations}
+	
+	The gyron spin fluid succeeds in reproducing the kinematics of
+	electromagnetism and gravity. It stalls, however, at the non-abelian
+	gauge structure and the three-generation structure of the Standard
+	Model. The spin variable $\bm{\sigma} \in \Rr^3$ is a real three-vector,
+	and its moments are symmetric tensors. Non-abelian gauge fields
+	require antisymmetric structure and internal indices, which are not
+	present in the real three-vector formulation. Moreover, the model
+	has no mechanism for producing three generations of particles.
+	
+	\subsection{The proposal: quaternionic orientation}
+	
+	In this paper we propose an extension in which the spin variable of
+	the gyron is promoted from a real three-vector to a unit quaternion
+	$q \in S^3$. The unit quaternions form the three-sphere $S^3 \cong
+	\SU(2)$, which is the double cover of the rotation group $\SO(3)$.
+	A unit quaternion naturally carries:
+	\begin{itemize}
+		\item the orientation of the gyron in space,
+		\item the spin state (up to the double-cover ambiguity),
+		\item the phase (the overall sign, which is the $\Uu(1)$ part).
+	\end{itemize}
+	
+	The quaternionic formulation is strictly richer than the real
+	three-vector formulation. It includes the real three-vector case as
+	a special limit (when the quaternion is purely imaginary) but adds
+	the phase, the $\SU(2)$ structure, and the chirality. The quaternionic
+	moment hierarchy naturally carries $\SU(2)$ representations, which is
+	the first step toward non-abelian gauge structure.
+	
+	\subsection{The Madelung surface}
+	
+	We identify a constraint surface in the space of gyron configurations
+	--- the \emph{Madelung surface} --- on which the spin amplitude
+	$\cA = |\cQ|$ and the spin phase gradient $\mathbf{v} =
+	(\hbar/M) \mathrm{Im}(\bar{U} \nabla U)$ satisfy equations of the
+	Madelung form:
+	\begin{align}
+		&\partial_t \cA + \nabla \cdot (\cA \mathbf{v}) = 0, \\
+		&\partial_t \mathbf{v} + (\mathbf{v} \cdot \nabla) \mathbf{v}
+		= -\nabla \Phi + D_{\mathrm{eff}} \nabla \left(
+		\frac{\nabla^2 \sqrt{\cA}}{\sqrt{\cA}} \right).
+	\end{align}
+	The quantum-potential term has coefficient $D_{\mathrm{eff}} =
+	D_s + c_2 D_a \cQ_\Hh$, and the calibration condition
+	$|D_{\mathrm{eff}}| = \hbar/(2M)$ ties the model to the physical
+	value of Planck's constant.
+	
+	The Madelung surface is defined by three closure conditions:
+	an amplitude condition, a momentum condition (which requires a curl
+	cancellation), and a scalar-potential condition. On this surface,
+	the gyron dynamics reduces to the Madelung-transformed Schr\"odinger
+	equation for the spatial part of the wavefunction, with the spin
+	part carried by the orientation quaternion.
+	
+	\subsection{The helical breathing soliton}
+	
+	On the Madelung surface, we construct a family of localized,
+	oscillatory, helical breather solutions. The breathers are
+	characterized by:
+	\begin{itemize}
+		\item a radial profile in the Gaussian-Laguerre basis,
+		\item a helical profile in the coordinate $\xi = z - l\theta$,
+		\item an oscillatory time dependence $e^{\omega_{\mathrm{osc}} t
+			\hat{n}}$.
+	\end{itemize}
+	
+	The breathers have four free parameters: the amplitude scale $A_0$,
+	the radial width $R$, the oscillation frequency
+	$\omega_{\mathrm{osc}}$, and the breather speed $c$. The numerical
+	solution of the spectral ODEs shows that the breather is dominated
+	by the lowest radial mode and is exponentially localized in the
+	helical coordinate.
+	
+	The far-field structure of the breather is characterized by an
+	electric monopole, a magnetic dipole, and a gravitational monopole.
+	The mass spectrum is quantized by the vacuum-matching boundary
+	condition:
+	\begin{equation}
+		M_n = n M_1, \qquad M_1 = \frac{2\pi \hbar}{v_0 W}.
+	\end{equation}
+	This is a linear mass spectrum, which matches the hadron spectrum
+	rather than the exponential lepton hierarchy.
+	
+	\subsection{Calibration}
+	
+	We calibrate the model parameters against the measured electron
+	mass, charge, spin, magnetic moment, and the speed of light. The
+	calibration conditions are:
+	\begin{align}
+		&c_{\mathrm{vortex}} = \frac{\sqrt{\chi_\rho}}{\tau_s}, \\
+		&M = m_e, \\
+		&Q = -e, \\
+		&S = \frac{\hbar}{2}, \\
+		&|D_{\mathrm{eff}}| = \frac{\hbar}{2M}, \\
+		&|\mathbf{m}| = \mu_B.
+	\end{align}
+	These six conditions fix six combinations of the gyron parameters,
+	leaving a four-dimensional residual freedom (after gauge fixing).
+	The gravitational constant $G$ remains a fundamental input, not
+	derived from the gyron parameters.
+	
+	\subsection{What the paper does and does not do}
+	
+	The paper does:
+	\begin{itemize}
+		\item develop a quaternionic kinetic theory for a spin fluid,
+		\item identify the Madelung surface and its closure conditions,
+		\item construct a family of localized helical breather solutions,
+		\item compute the far-field multipole structure,
+		\item calibrate the model against the electron properties.
+	\end{itemize}
+	
+	The paper does not:
+	\begin{itemize}
+		\item derive the Standard Model gauge group,
+		\item explain the three generations,
+		\item derive quantum mechanics,
+		\item derive general relativity,
+		\item fix the gravitational constant $G$.
+	\end{itemize}
+	
+	The model is a toy model in the analogue-gravity tradition
+	\cite{unruh1981,visser1998,barcelo2011}: a classical medium may
+	produce effective field kinematics without reproducing the
+	fundamental dynamics of the field it resembles. In conventional
+	acoustic analogues, a wave equation can be recast in terms of an
+	effective Lorentzian metric under specified fluid assumptions
+	\cite{visser1998,vissermolina2010}. The present quaternionic
+	spin-fluid associations are distinct: an effective spacetime metric
+	and Einstein-equation limit have not been established here.
+	
+	\subsection{Organization}
+	
+	The paper is organized as follows. Section~\ref{sec:kinetic}
+	develops the quaternionic kinetic theory. Section~\ref{sec:closure}
+	presents the closure and the closed system. Section~\ref{sec:spectrum}
+	analyzes the linear spectrum. Section~\ref{sec:madelung} defines the
+	Madelung surface and its closure conditions.
+	Section~\ref{sec:sign} discusses the sign problem and its resolution
+	by oscillation. Section~\ref{sec:helical} presents the helical
+	breathing soliton and its numerical solution.
+	Section~\ref{sec:farfield} computes the far-field multipole structure.
+	Section~\ref{sec:calibration} presents the calibration.
+	Section~\ref{sec:explains} discusses what the model explains and
+	what remains open.
+% ------------------------------------------------------------
+\section{The Quaternionic Kinetic Theory}
+\label{sec:kinetic}
+% ------------------------------------------------------------
+
+\subsection{Phase Space}
+\label{sec:phase-space}
+
+We consider a classical fluid of gyrons: axisymmetric rigid bodies
+carrying position, velocity, intrinsic spin, and orientation. Each
+gyron is characterized by a fixed body-frame moment-of-inertia tensor
+$I_{ab}$ ($a,b$ body indices), with the symmetry axis defining a unit
+director $\hat{\mathbf{n}} \in S^2$ in the lab frame. In the
+quaternionic formulation, the director is replaced by a unit quaternion
+$q \in S^3$, which encodes the full orientation (including the phase
+about the symmetry axis).
+
+The single-gyron phase-space variables are
+\begin{equation}
+	(\vx, \vv, q, \boldsymbol{\omega}),
+	\label{eq:phase-space}
+\end{equation}
+where $\vx$ is position, $\vv$ is velocity, $q \in S^3$ is the
+orientation quaternion, and $\boldsymbol{\omega}$ is the body angular
+velocity. The lab-frame angular momentum is
+\begin{equation}
+	\boldsymbol{\sigma} = \mathbb{I}(q) \boldsymbol{\omega},
+	\label{eq:angular-momentum}
+\end{equation}
+where $\mathbb{I}(q)$ is the lab-frame inertia tensor, which depends on
+the orientation $q$.
+
+Assuming angular velocity relaxes rapidly to quasi-equilibrium with the
+orientation, we integrate out $\boldsymbol{\omega}$ and work with the
+reduced distribution
+\begin{equation}
+	f(\vx, \vv, q, t).
+	\label{eq:distribution}
+\end{equation}
+The measure on $S^3$ is the Haar measure $\dd\Omega_3$, normalized so
+that $\int_{S^3} \dd\Omega_3 = 1$. The full phase-space measure is
+$\dd\Gamma = \dd^3 v \, \dd\Omega_3$.
+
+\subsection{Quaternion Algebra}
+\label{sec:quaternion-algebra}
+
+A quaternion is written as
+\begin{equation}
+	q = q_0 + q_1 i + q_2 j + q_3 k,
+	\label{eq:quaternion}
+\end{equation}
+with multiplication rules
+\begin{equation}
+	i^2 = j^2 = k^2 = ijk = -1,
+\end{equation}
+\begin{equation}
+	ij = k, \quad jk = i, \quad ki = j, \quad
+	ji = -k, \quad kj = -i, \quad ik = -j.
+\end{equation}
+The conjugate is
+\begin{equation}
+	\bar{q} = q_0 - q_1 i - q_2 j - q_3 k,
+\end{equation}
+and the norm is
+\begin{equation}
+	|q|^2 = q\bar{q} = q_0^2 + q_1^2 + q_2^2 + q_3^2.
+\end{equation}
+For unit quaternions, $|q| = 1$, so $q \in S^3$.
+
+A vector $\mathbf{a} \in \Rr^3$ is rotated by $q$ to
+\begin{equation}
+	\mathbf{a}' = q \, \mathbf{a} \, \bar{q},
+\end{equation}
+where $\mathbf{a}$ is embedded as the pure imaginary quaternion
+$a_1 i + a_2 j + a_3 k$.
+
+\subsection{The Kinetic Equation}
+\label{sec:kinetic-equation}
+
+The kinetic equation is
+\begin{equation}
+	\underbrace{\frac{\partial f}{\partial t}}_{\text{time evolution}}
+	+ \underbrace{v_i \frac{\partial f}{\partial x_i}}_{\text{spatial advection}}
+	+ \underbrace{\dot{q}^a \frac{\partial f}{\partial q^a}}_{\text{orientation advection}}
+	= \underbrace{C[f]}_{\text{collision operator}},
+	\label{eq:kinetic}
+\end{equation}
+where $\dot{q}$ is the orientation evolution.
+
+The orientation evolves by the quaternionic Jeffery equation for a rigid
+axisymmetric body in a flow:
+\begin{equation}
+	\underbrace{\dot{q}}_{\text{orientation rate}}
+	= \underbrace{\frac{1}{2} \Omega \, q}_{\text{rigid-body rotation}}
+	+ \underbrace{\lambda \, \mathcal{S} \, q}_{\text{Jeffery alignment}},
+	\label{eq:jeffery}
+\end{equation}
+where
+\begin{equation}
+	\Omega = \Omega_{ij} e_i e_j, \qquad
+	\mathcal{S} = S_{ij} e_i e_j,
+\end{equation}
+are the vorticity and strain-rate tensors embedded as pure imaginary
+quaternions, and
+\begin{equation}
+	\lambda = \frac{(a/b)^2 - 1}{(a/b)^2 + 1}
+	\label{eq:jeffery-parameter}
+\end{equation}
+is the Jeffery shape parameter, with $a/b$ the aspect ratio. For a
+prolate body $\lambda > 0$; for an oblate body $\lambda < 0$; for a
+sphere $\lambda = 0$.
+
+The vorticity and strain-rate tensors are
+\begin{equation}
+	\Omega_{ij} = \frac{1}{2}(\partial_i u_j - \partial_j u_i), \qquad
+	S_{ij} = \frac{1}{2}(\partial_i u_j + \partial_j u_i),
+	\label{eq:vorticity-strain}
+\end{equation}
+where $u_i$ is the fluid velocity.
+
+\subsection{Collision Invariants}
+\label{sec:collision-invariants}
+
+The collision operator conserves, at the microscopic level,
+\begin{align}
+	&\underbrace{\int C[f] \, \dd\Gamma = 0}_{\text{mass}}, \\
+	&\underbrace{\int v_i \, C[f] \, \dd\Gamma = 0}_{\text{momentum}}, \\
+	&\underbrace{\int \left( \sigma_i(q) + \epsilon_{ijk} x_j v_k \right)
+		C[f] \, \dd\Gamma = 0}_{\text{total angular momentum}}, \\
+	&\underbrace{\int \left( \tfrac{1}{2} v^2 + \tfrac{1}{2} I_\rho
+		\omega^2 \right) C[f] \, \dd\Gamma = 0}_{\text{energy}},
+	\label{eq:invariants}
+\end{align}
+where $I_\rho$ is the specific moment of inertia and $\sigma_i(q)$ is
+the lab-frame spin angular momentum.
+
+The spin angular momentum in quaternion form is
+\begin{equation}
+	\sigma_i(q) = \mathrm{Im}\left( q \, I_\rho \boldsymbol{\omega} \,
+	\bar{q} \right).
+	\label{eq:spin-angular-momentum}
+\end{equation}
+
+\subsection{Hydrodynamic Moments}
+\label{sec:moments}
+
+We define the mass-weighted moments:
+\begin{align}
+	\underbrace{\rho = \int m f \, \dd\Gamma}_{\text{mass density}}, \\
+	\underbrace{\rho u_i = \int m v_i f \, \dd\Gamma}_{\text{momentum density}}, \\
+	\underbrace{\cQ = \int m q f \, \dd\Gamma}_{\text{quaternionic spin density}}, \\
+	\underbrace{\cP = \int m p f \, \dd\Gamma}_{\text{conjugate momentum density}}, \\
+	\underbrace{P_{ij} = \int m (v_i - u_i)(v_j - u_j) f \, \dd\Gamma}_{\text{translational pressure}}, \\
+	\underbrace{\Pi_{ab} = \int m (q_a - \cQ_a)(\bar{q}_b - \bar{\cQ}_b)
+		f \, \dd\Gamma}_{\text{quaternionic spin pressure}}, \\
+	\underbrace{\mathcal{K}_{ab} = \int m (p_a - \cP_a)(p_b - \cP_b)
+		f \, \dd\Gamma}_{\text{conjugate pressure}}, \\
+	\underbrace{Q_{ia} = \int m (v_i - u_i)(q_a - \cQ_a) f \, \dd\Gamma}_{\text{velocity-spin flux}}, \\
+	\underbrace{R_{ia} = \int m (v_i - u_i)(p_a - \cP_a) f \, \dd\Gamma}_{\text{velocity-conjugate flux}}, \\
+	\underbrace{\mathcal{M}_{ab} = \int m (q_a - \cQ_a)(p_b - \cP_b)
+		f \, \dd\Gamma}_{\text{spin-conjugate flux}},
+	\label{eq:moments}
+\end{align}
+where $p_a$ is the conjugate momentum to $q_a$, and
+$\Sigma_i = \cQ_i/\rho$ is the specific spin.
+
+\subsection{The Exact Moment Hierarchy to Third Order}
+\label{sec:hierarchy}
+
+Taking moments of the kinetic equation against each weight gives the
+exact hierarchy. We present the equations to third order.
+
+\subsubsection{Zeroth Moment (Mass)}
+
+\begin{equation}
+	\underbrace{\partial_t \rho}_{\text{density rate}}
+	+ \underbrace{\partial_j (\rho u_j)}_{\text{mass flux}}
+	= \underbrace{0}_{\text{mass conservation}}.
+	\label{eq:moment-0}
+\end{equation}
+
+\subsubsection{First Moment (Momentum)}
+
+\begin{equation}
+	\underbrace{\partial_t (\rho u_i)}_{\text{momentum rate}}
+	+ \underbrace{\partial_j (\rho u_i u_j)}_{\text{advection}}
+	+ \underbrace{\partial_j P_{ij}}_{\text{pressure gradient}}
+	= \underbrace{0}_{\text{momentum conservation}}.
+	\label{eq:moment-1}
+\end{equation}
+
+\subsubsection{First Quaternionic Moment (Spin)}
+
+\begin{equation}
+	\underbrace{\partial_t \cQ_a}_{\text{spin rate}}
+	+ \underbrace{\partial_j (u_j \cQ_a)}_{\text{advection}}
+	+ \underbrace{\Omega_{ab} \cQ_b}_{\text{vorticity coupling}}
+	+ \underbrace{\lambda \mathcal{S}_{ab} \cQ_b}_{\text{Jeffery coupling}}
+	+ \underbrace{\partial_j Q_{ja}}_{\text{spin flux divergence}}
+	= \underbrace{\mathcal{C}^{(\cQ)}_a}_{\text{collision source}}.
+	\label{eq:moment-spin}
+\end{equation}
+
+\subsubsection{First Conjugate Moment}
+
+\begin{equation}
+	\underbrace{\partial_t \cP_a}_{\text{conjugate rate}}
+	+ \underbrace{\partial_j (u_j \cP_a)}_{\text{advection}}
+	+ \underbrace{\Omega_{ab} \cP_b}_{\text{vorticity coupling}}
+	+ \underbrace{\lambda \mathcal{S}_{ab} \cP_b}_{\text{Jeffery coupling}}
+	+ \underbrace{\partial_j R_{ja}}_{\text{conjugate flux divergence}}
+	= \underbrace{\mathcal{C}^{(\cP)}_a}_{\text{collision source}}.
+	\label{eq:moment-conjugate}
+\end{equation}
+
+\subsubsection{Second Translational Moment (Stress)}
+
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t P_{ij}}_{\text{stress rate}}
+		+ \underbrace{\partial_k (u_k P_{ij})}_{\text{advection}}
+		+ \underbrace{P_{ik} \partial_k u_j + P_{jk} \partial_k u_i}_{\text{stretching}} \\
+		&\quad + \underbrace{\partial_k Q_{ijk}}_{\text{third moment}}
+		= \underbrace{\mathcal{C}^{(P)}_{ij}}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:moment-P}
+\end{equation}
+
+\subsubsection{Second Quaternionic Moment (Spin Pressure)}
+
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t \Pi_{ab}}_{\text{spin pressure rate}}
+		+ \underbrace{\partial_k (u_k \Pi_{ab})}_{\text{advection}}
+		+ \underbrace{\Pi_{ak} \partial_k u_b + \Pi_{bk} \partial_k u_a}_{\text{stretching}} \\
+		&\quad + \underbrace{\partial_k \Theta_{kab}}_{\text{third moment}}
+		= \underbrace{\mathcal{C}^{(\Pi)}_{ab}}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:moment-Pi}
+\end{equation}
+
+\subsubsection{Second Conjugate Moment}
+
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t \mathcal{K}_{ab}}_{\text{conjugate pressure rate}}
+		+ \underbrace{\partial_k (u_k \mathcal{K}_{ab})}_{\text{advection}}
+		+ \underbrace{\mathcal{K}_{ak} \partial_k u_b + \mathcal{K}_{bk} \partial_k u_a}_{\text{stretching}} \\
+		&\quad + \underbrace{\partial_k \Omega_{kab}}_{\text{third moment}}
+		= \underbrace{\mathcal{C}^{(\mathcal{K})}_{ab}}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:moment-K}
+\end{equation}
+
+\subsubsection{Mixed Velocity-Spin Moment}
+
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t Q_{ia}}_{\text{velocity-spin rate}}
+		+ \underbrace{\partial_k (u_k Q_{ia})}_{\text{advection}}
+		+ \underbrace{Q_{ka} \partial_k u_i + Q_{ik} \partial_k u_a}_{\text{stretching}} \\
+		&\quad + \underbrace{\partial_k \Theta_{kia}}_{\text{third moment}}
+		= \underbrace{\mathcal{C}^{(Q)}_{ia}}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:moment-Q}
+\end{equation}
+
+\subsubsection{Mixed Velocity-Conjugate Moment}
+
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t R_{ia}}_{\text{velocity-conjugate rate}}
+		+ \underbrace{\partial_k (u_k R_{ia})}_{\text{advection}}
+		+ \underbrace{R_{ka} \partial_k u_i + R_{ik} \partial_k u_a}_{\text{stretching}} \\
+		&\quad + \underbrace{\partial_k \Omega_{kia}}_{\text{third moment}}
+		= \underbrace{\mathcal{C}^{(R)}_{ia}}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:moment-R}
+\end{equation}
+
+\subsubsection{Mixed Spin-Conjugate Moment}
+
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t \mathcal{M}_{ab}}_{\text{spin-conjugate rate}}
+		+ \underbrace{\partial_k (u_k \mathcal{M}_{ab})}_{\text{advection}}
+		+ \underbrace{\mathcal{M}_{ak} \partial_k u_b + \mathcal{M}_{bk} \partial_k u_a}_{\text{stretching}} \\
+		&\quad + \underbrace{\partial_k \Xi_{kab}}_{\text{third moment}}
+		= \underbrace{\mathcal{C}^{(\mathcal{M})}_{ab}}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:moment-M}
+\end{equation}
+
+\subsubsection{Third Moments (Definition)}
+
+The third moments appearing in the hierarchy are
+\begin{align}
+	\underbrace{Q_{ijk} = \int m (v_i - u_i)(v_j - u_j)(v_k - u_k) f \, \dd\Gamma}_{\text{translational third moment}}, \\
+	\underbrace{\Theta_{kab} = \int m (v_k - u_k)(q_a - \cQ_a)(\bar{q}_b - \bar{\cQ}_b) f \, \dd\Gamma}_{\text{velocity-spin-spin}}, \\
+	\underbrace{\Omega_{kab} = \int m (v_k - u_k)(p_a - \cP_a)(p_b - \cP_b) f \, \dd\Gamma}_{\text{velocity-conjugate-conjugate}}, \\
+	\underbrace{\Xi_{kab} = \int m (q_a - \cQ_a)(\bar{q}_b - \bar{\cQ}_b)(q_c - \cQ_c) f \, \dd\Gamma}_{\text{spin-spin-spin}}.
+	\label{eq:third-moments}
+\end{align}
+
+\subsection{Structure of the Hierarchy}
+\label{sec:hierarchy-structure}
+
+The exact hierarchy is summarized in Table~\ref{tab:hierarchy}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}llll@{}}
+		\toprule
+		Equation & Moments & Third moments & Collision \\
+		\midrule
+		Mass & $\rho$ & --- & 0 \\
+		Momentum & $\rho u_i$ & --- & 0 \\
+		Spin & $\cQ_a$ & $Q_{ja}$ & $\mathcal{C}^{(\cQ)}_a$ \\
+		Conjugate & $\cP_a$ & $R_{ja}$ & $\mathcal{C}^{(\cP)}_a$ \\
+		Stress & $P_{ij}$ & $Q_{ijk}$ & $\mathcal{C}^{(P)}_{ij}$ \\
+		Spin pressure & $\Pi_{ab}$ & $\Theta_{kab}$ & $\mathcal{C}^{(\Pi)}_{ab}$ \\
+		Conjugate pressure & $\mathcal{K}_{ab}$ & $\Omega_{kab}$ & $\mathcal{C}^{(\mathcal{K})}_{ab}$ \\
+		Velocity-spin & $Q_{ia}$ & $\Theta_{kia}$ & $\mathcal{C}^{(Q)}_{ia}$ \\
+		Velocity-conjugate & $R_{ia}$ & $\Omega_{kia}$ & $\mathcal{C}^{(R)}_{ia}$ \\
+		Spin-conjugate & $\mathcal{M}_{ab}$ & $\Xi_{kab}$ & $\mathcal{C}^{(\mathcal{M})}_{ab}$ \\
+		\bottomrule
+	\end{tabular}
+	\caption{The exact moment hierarchy to third order.}
+	\label{tab:hierarchy}
+\end{table}
+
+The hierarchy is exact. Closure is required at the level of the third
+moments and the collision terms.
+
+\subsection{Angular Momentum Conservation Constraint}
+\label{sec:angular-momentum}
+
+The total angular momentum is
+\begin{equation}
+	\underbrace{\mathcal{L}_i}_{\text{total angular momentum}}
+	= \underbrace{\epsilon_{ijk} x_j \rho u_k}_{\text{orbital}}
+	+ \underbrace{\mathrm{Im}(\cQ \cP^* e_i)}_{\text{spin}}.
+	\label{eq:total-angular-momentum}
+\end{equation}
+Its conservation law is
+\begin{equation}
+	\partial_t \mathcal{L}_i + \partial_j \mathcal{J}_{ij} = 0,
+	\label{eq:angular-momentum-conservation}
+\end{equation}
+where $\mathcal{J}_{ij}$ is the angular momentum flux. This constraint
+ties the spin collision term to the antisymmetric stress:
+\begin{equation}
+	\underbrace{\mathcal{C}^{(\cQ)}_a}_{\text{spin source}}
+	= \underbrace{\mathrm{Im}(\cQ \cP^* e_k)}_{\text{spin projection}}
+	\underbrace{P^{\mathrm{anti}}_{jk}}_{\text{antisymmetric stress}}.
+	\label{eq:spin-source}
+\end{equation}
+This is the quaternionic analogue of the vector relation
+$\mathcal{C}^{(\cS)}_i = \epsilon_{ijk} P^{\mathrm{anti}}_{jk}$.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Closure and the Closed System}
+\label{sec:closure}
+% ------------------------------------------------------------
+
+The exact moment hierarchy of Section~\ref{sec:hierarchy} is infinite.
+To obtain a closed system, we must express the third moments and the
+collision terms in terms of the lower moments. In this section we
+present the closure approximations and the resulting closed system.
+
+\subsection{Relaxation-Time Closure}
+\label{sec:relaxation-closure}
+
+For the translational, spin, and spin-flux sectors we adopt the
+relaxation-time (BGK) approximation \cite{bgk1954}, valid in the
+hydrodynamic regime $\mathrm{Kn} \ll 1$:
+\begin{align}
+	\underbrace{\mathcal{C}^{(P)}_{ij}}_{\text{stress collision}}
+	&= \underbrace{-\frac{P_{ij} - P \delta_{ij}}{\tau}}_{\text{isotropic relaxation}}, \\
+	\underbrace{\mathcal{C}^{(\Pi)}_{ab}}_{\text{spin pressure collision}}
+	&= \underbrace{-\frac{\Pi_{ab} - \Pi \delta_{ab}}{\tau_s}}_{\text{spin relaxation}}, \\
+	\underbrace{\mathcal{C}^{(Q)}_{ia}}_{\text{spin flux collision}}
+	&= \underbrace{-\frac{Q_{ia}}{\tau_Q}}_{\text{flux relaxation}}, \\
+	\underbrace{\mathcal{C}^{(R)}_{ia}}_{\text{conjugate flux collision}}
+	&= \underbrace{-\frac{R_{ia}}{\tau_R}}_{\text{conjugate flux relaxation}}, \\
+	\underbrace{\mathcal{C}^{(\mathcal{K})}_{ab}}_{\text{conjugate pressure collision}}
+	&= \underbrace{-\frac{\mathcal{K}_{ab} - \mathcal{K} \delta_{ab}}{\tau_{\mathcal{K}}}}_{\text{conjugate relaxation}}, \\
+	\underbrace{\mathcal{C}^{(\mathcal{M})}_{ab}}_{\text{spin-conjugate collision}}
+	&= \underbrace{-\frac{\mathcal{M}_{ab}}{\tau_{\mathcal{M}}}}_{\text{spin-conjugate relaxation}},
+	\label{eq:relaxation-closure}
+\end{align}
+where
+\begin{equation}
+	P = \frac{1}{3} P_{ii}, \qquad
+	\Pi = \frac{1}{4} \Pi_{aa}, \qquad
+	\mathcal{K} = \frac{1}{4} \mathcal{K}_{aa}
+\end{equation}
+are the isotropic pressures. The relaxation times
+$\tau, \tau_s, \tau_Q, \tau_R, \tau_{\mathcal{K}}, \tau_{\mathcal{M}}$
+are determined by the collision integral.
+
+\subsection{Anisotropic Nematic Closure}
+\label{sec:nematic-closure}
+
+For the nematic sector, the isotropic relaxation
+$-\hat{\mathcal{A}}_{ab}/\tau_a$ is insufficient, because the collision
+integral distinguishes between different angular modes. Alignment-tensor
+and orientational Fokker-Planck closures provide the relevant kinetic
+precedent \cite{hess1976,doi1986}.
+
+We define the quaternionic nematic order parameter as the traceless part
+of the spin pressure:
+\begin{equation}
+	\underbrace{\hat{\mathcal{A}}_{ab}}_{\text{quaternionic nematic}}
+	= \underbrace{\Pi_{ab} - \tfrac{1}{4} \Pi_{cc} \delta_{ab}}_{\text{traceless projection}},
+	\label{eq:nematic-order}
+\end{equation}
+which is dimensionless after normalization by the density.
+
+The minimal anisotropic closure is
+\begin{equation}
+	\underbrace{\mathcal{R}_{abcd} \hat{\mathcal{A}}_{cd}}_{\text{nematic relaxation}}
+	= \underbrace{\frac{1}{\tau_a} \left[ \hat{\mathcal{A}}_{ab}
+		- c_2 \mathcal{P}^{(2)}_{abcd} \hat{\mathcal{A}}_{cd}
+		- c_4 \mathcal{P}^{(4)}_{abcd} \hat{\mathcal{A}}_{cd}
+		- \ldots \right]}_{\text{anisotropic relaxation}},
+	\label{eq:nematic-closure}
+\end{equation}
+where $\mathcal{P}^{(2)}, \mathcal{P}^{(4)}$ are projectors onto the
+$l = 2$ and $l = 4$ angular modes. The Legendre moments $c_2, c_4$ are
+those of the hard-body cross section
+\begin{equation}
+	\underbrace{\sigma(\hat{\mathbf{n}}, \hat{\mathbf{g}})}_{\text{cross section}}
+	= \underbrace{\sigma_0 \left[ 1 + c_2 P_2(\hat{\mathbf{n}} \cdot
+		\hat{\mathbf{g}}) + c_4 P_4(\hat{\mathbf{n}} \cdot \hat{\mathbf{g}})
+		+ \ldots \right]}_{\text{Legendre expansion}},
+	\label{eq:cross-section}
+\end{equation}
+where $\hat{\mathbf{n}}$ is the gyron symmetry axis, $\hat{\mathbf{g}}$
+is the collision direction, and $P_l$ are Legendre polynomials. The
+shape parameters $c_2, c_4$ are determined by the gyron profile.
+
+At leading order in the anisotropy, we retain only $c_2$; $c_4$ enters
+at higher order in the nematic expansion.
+
+\subsection{Constitutive Relations}
+\label{sec:constitutive}
+
+The leading-order constitutive relations for the fluxes are
+\begin{align}
+	\underbrace{Q_{ia}}_{\text{spin flux}}
+	&= \underbrace{-D_s \partial_i \cQ_a}_{\text{isotropic diffusion}}
+	\underbrace{- c_2 D_a \partial_i (\cQ_b \hat{\mathcal{A}}_{ba})}_{\text{nematic correction}}
+	+ \ldots, \\
+	\underbrace{P^{\mathrm{anti}}_{ij}}_{\text{antisymmetric stress}}
+	&= \underbrace{\eta_r \omega_{ij}}_{\text{viscous coupling}}
+	\underbrace{- \frac{1}{2\tau_s} \mathrm{Im}(\cQ \cP^* e_k)}_{\text{spin relaxation}}
+	\underbrace{+ c_2 \kappa_2 \mathrm{Im}(\cQ \hat{\mathcal{A}} \cP^* e_k)
+	}_{\text{nematic correction}}
+	+ \ldots, \\
+	\underbrace{P_{ij}}_{\text{pressure tensor}}
+	&= \underbrace{P \delta_{ij}}_{\text{isotropic}}
+	\underbrace{- c_2 \mu_a \hat{\mathcal{A}}_{ij}}_{\text{nematic stress}}
+	+ \ldots,
+	\label{eq:constitutive}
+\end{align}
+where $D_s, D_a, \eta_r, \kappa_2, \mu_a$ are transport coefficients
+determined by the collision integral and the gyron shape. The appearance
+of intrinsic rotation, antisymmetric stress, and couple-stress-type
+response has classical precedents in Cosserat and micropolar continuum
+mechanics \cite{cosserat1909,eringen1966} and in kinetic theory for
+nonspherical molecules \cite{curtiss1956}.
+
+All transport coefficients depend on the Legendre moments $c_2, c_4,
+\ldots$ through the hard-body cross section. For the leading-order
+theory we retain only $c_2$.
+
+For the higher moments we adopt the factorized (quasi-equilibrium)
+closure,
+\begin{equation}
+	\underbrace{Q_{ijk}}_{\text{third moment}}
+	\approx \underbrace{\frac{1}{\rho} (P_{ij} \rho u_k +
+		\text{perms})}_{\text{factorized}},
+	\qquad
+	\underbrace{\Theta_{kab}}_{\text{velocity-spin-spin}}
+	\approx \underbrace{0}_{\text{negligible}},
+	\qquad
+	\underbrace{\Xi_{kab}}_{\text{spin-spin-spin}}
+	\approx \underbrace{0}_{\text{negligible}},
+	\label{eq:factorized}
+\end{equation}
+which is exact for near-equilibrium distributions and approximate
+otherwise.
+
+\subsection{The Closed System}
+\label{sec:closed-system}
+
+With the closures of Sections~\ref{sec:relaxation-closure}--
+\ref{sec:constitutive}, the closed system is
+\begin{align}
+	&\underbrace{\partial_t \rho + \partial_j (\rho u_j) = 0}_{\text{mass}}, \\
+	&\underbrace{\partial_t (\rho u_i) + \partial_j (\rho u_i u_j + P \delta_{ij}
+		+ P_{ij}^{(a)} + P^{\mathrm{anti}}_{ij}) = 0}_{\text{momentum}}, \\
+	&\underbrace{\partial_t \cQ_a + \partial_j (u_j \cQ_a) + \Omega_{ab} \cQ_b
+		+ \lambda \mathcal{S}_{ab} \cQ_b + \partial_j Q_{ja}
+		= \mathcal{C}^{(\cQ)}_a}_{\text{spin}}, \\
+	&\underbrace{\partial_t \cP_a + \partial_j (u_j \cP_a) + \Omega_{ab} \cP_b
+		+ \lambda \mathcal{S}_{ab} \cP_b + \partial_j R_{ja}
+		= \mathcal{C}^{(\cP)}_a}_{\text{conjugate}}, \\
+	&\underbrace{\partial_t \hat{\mathcal{A}}_{ab} + \partial_k (u_k
+		\hat{\mathcal{A}}_{ab}) + \hat{\mathcal{A}}_{ak} \Omega_{kb}
+		+ \hat{\mathcal{A}}_{bk} \Omega_{ka} + \lambda \mathcal{J}_{ab}
+		= -\mathcal{R}_{abcd} \hat{\mathcal{A}}_{cd}}_{\text{nematic}}, \\
+	&\underbrace{\partial_t P_{ij} + \partial_k (u_k P_{ij}) + P_{ik} \partial_k u_j
+		+ P_{jk} \partial_k u_i = -\frac{P_{ij} - P \delta_{ij}}{\tau}}_{\text{stress}}, \\
+	&\underbrace{\partial_t \Pi_{ab} + \partial_k (u_k \Pi_{ab})
+		+ \Pi_{ak} \partial_k u_b + \Pi_{bk} \partial_k u_a
+		= -\frac{\Pi_{ab} - \Pi \delta_{ab}}{\tau_s}}_{\text{spin pressure}}, \\
+	&\underbrace{\partial_t \mathcal{K}_{ab} + \partial_k (u_k \mathcal{K}_{ab})
+		+ \mathcal{K}_{ak} \partial_k u_b + \mathcal{K}_{bk} \partial_k u_a
+		= -\frac{\mathcal{K}_{ab} - \mathcal{K} \delta_{ab}}{\tau_{\mathcal{K}}}}_{\text{conjugate pressure}}, \\
+	&\underbrace{\partial_t Q_{ia} + \partial_k (u_k Q_{ia}) + Q_{ka} \partial_k u_i
+		+ Q_{ik} \partial_k u_a = -\frac{Q_{ia}}{\tau_Q}}_{\text{spin flux}}, \\
+	&\underbrace{\partial_t R_{ia} + \partial_k (u_k R_{ia}) + R_{ka} \partial_k u_i
+		+ R_{ik} \partial_k u_a = -\frac{R_{ia}}{\tau_R}}_{\text{conjugate flux}}, \\
+	&\underbrace{\partial_t \mathcal{M}_{ab} + \partial_k (u_k \mathcal{M}_{ab})
+		+ \mathcal{M}_{ak} \partial_k u_b + \mathcal{M}_{bk} \partial_k u_a
+		= -\frac{\mathcal{M}_{ab}}{\tau_{\mathcal{M}}}}_{\text{spin-conjugate flux}},
+	\label{eq:closed-system}
+\end{align}
+with the constitutive relations \eqref{eq:constitutive}, the
+quaternionic Jeffery coupling
+\begin{equation}
+	\underbrace{\mathcal{J}_{ab}}_{\text{Jeffery coupling}}
+	= \underbrace{\hat{\mathcal{A}}_{ak} \mathcal{S}_{kb}
+		+ \hat{\mathcal{A}}_{bk} \mathcal{S}_{ka}}_{\text{strain coupling}}
+	\underbrace{- \tfrac{1}{2} \delta_{ab} \hat{\mathcal{A}}_{kl}
+		\mathcal{S}_{kl}}_{\text{trace subtraction}},
+	\label{eq:jeffery-coupling}
+\end{equation}
+and the anisotropic nematic relaxation \eqref{eq:nematic-closure}.
+
+The shape parameters $c_2, c_4$ and the Jeffery parameter $\lambda$
+appear explicitly. This is the system on which all subsequent analysis
+is based.
+
+\subsection{The Quaternionic Jeffery Coupling}
+\label{sec:jeffery-coupling}
+
+The Jeffery coupling $\mathcal{J}_{ab}$ enters the nematic balance
+equation. It couples the nematic order parameter to the strain rate. In
+the quaternionic formulation, it takes the form
+\begin{equation}
+	\underbrace{\mathcal{J}_{ab}}_{\text{Jeffery coupling}}
+	= \underbrace{\hat{\mathcal{A}}_{ak} \mathcal{S}_{kb}
+		+ \hat{\mathcal{A}}_{bk} \mathcal{S}_{ka}}_{\text{strain alignment}}
+	\underbrace{- \tfrac{1}{2} \delta_{ab} \hat{\mathcal{A}}_{kl}
+		\mathcal{S}_{kl}}_{\text{traceless projection}},
+	\label{eq:jeffery-coupling-explicit}
+\end{equation}
+where $\mathcal{S}_{ab}$ is the strain-rate tensor embedded in
+quaternion indices. This is the quaternionic generalization of the
+vector Jeffery coupling
+\begin{equation}
+	\mathcal{J}_{ij} = \hat{a}_{ik} S_{kj} + \hat{a}_{jk} S_{ki}
+	- \tfrac{2}{3} \delta_{ij} \hat{a}_{kl} S_{kl}.
+\end{equation}
+
+\subsection{Transport Coefficients}
+\label{sec:transport-coefficients}
+
+The transport coefficients are determined by the collision integral and
+the gyron shape. In the relaxation-time approximation they are
+\begin{align}
+	\underbrace{D_s}_{\text{spin diffusion}}
+	&= \underbrace{\frac{k_B T \tau_s}{m}}_{\text{kinetic theory}}, \\
+	\underbrace{D_a}_{\text{nematic spin transport}}
+	&= \underbrace{\frac{k_B T \tau_a}{m}}_{\text{kinetic theory}}, \\
+	\underbrace{\eta_r}_{\text{rotational viscosity}}
+	&= \underbrace{\frac{\rho \chi_\rho}{\tau_s}}_{\text{slaved regime}}, \\
+	\underbrace{\kappa_2}_{\text{spin-nematic coupling}}
+	&= \underbrace{\frac{\rho \chi_\rho^2}{\tau_s}}_{\text{leading order}}, \\
+	\underbrace{\mu_a}_{\text{nematic stress}}
+	&= \underbrace{\frac{\rho k_B T}{m}}_{\text{ideal gas}},
+	\label{eq:transport-coefficients}
+\end{align}
+where $T$ is the temperature and $\chi_\rho$ is the spin susceptibility.
+
+These relations are valid in the hydrodynamic regime and at leading
+order in the anisotropy. Higher-order corrections involve $c_4$ and the
+full collision integral.
+
+\subsection{The Slaved Regime}
+\label{sec:slaved}
+
+In the limit of strong spin relaxation ($\tau_s \to 0$), the spin is
+slaved to the vorticity:
+\begin{equation}
+	\underbrace{\cQ_i}_{\text{spin density}}
+	\to \underbrace{\rho \chi_\rho \omega_i}_{\text{slaved value}}.
+	\label{eq:slaved}
+\end{equation}
+In this regime, the spin equation becomes algebraic, and the spin
+density is determined by the local vorticity. This simplification is
+used in the analysis of the linear spectrum and the Madelung surface.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Linear Spectrum}
+\label{sec:spectrum}
+% ------------------------------------------------------------
+
+The closed system \eqref{eq:closed-system} admits a rich spectrum of
+linear modes when perturbed around a uniform background. We catalogue
+these modes here, as they determine the propagation speeds, relaxation
+rates, and coupling structure that underlie the subsequent analysis.
+
+\subsection{Setup}
+\label{sec:spectrum-setup}
+
+Linearize around the uniform background
+\begin{equation}
+	\underbrace{\rho = \rho_0}_{\text{uniform density}},
+	\qquad
+	\underbrace{\mathbf{u} = 0}_{\text{rest frame}},
+	\qquad
+	\underbrace{\cQ = 0}_{\text{no spin}},
+	\qquad
+	\underbrace{\hat{\mathcal{A}}_{ab} = 0}_{\text{no nematic}},
+	\label{eq:background}
+\end{equation}
+and Fourier transform in space and time:
+\begin{equation}
+	\underbrace{\delta X \sim \hat{X} e^{i(\mathbf{k} \cdot \mathbf{x}
+			- \omega t)}}_{\text{plane-wave perturbation}}.
+	\label{eq:fourier}
+\end{equation}
+Decompose each perturbation into longitudinal
+($\parallel \mathbf{k}$) and transverse ($\perp \mathbf{k}$) parts.
+
+\subsection{Translational Sector}
+\label{sec:translational-sector}
+
+\subsubsection{Sound Mode (Longitudinal)}
+
+For longitudinal perturbations, the spin and nematic couplings cancel,
+and the density and velocity perturbations satisfy the standard
+acoustic dispersion relation
+\begin{equation}
+	\underbrace{\omega^2 = c_s^2 k^2}_{\text{sound dispersion}},
+	\qquad
+	\underbrace{c_s^2 = \left. \frac{\partial P}{\partial \rho}
+		\right|_S}_{\text{sound speed}},
+	\label{eq:sound}
+\end{equation}
+where the derivative is taken at constant entropy. This is the acoustic
+branch, unaffected by the spin or nematic sectors at leading order.
+
+\subsubsection{Shear Mode (Transverse)}
+
+For transverse perturbations, the momentum equation is diffusive:
+\begin{equation}
+	\underbrace{\omega = -i \nu k^2}_{\text{shear dispersion}},
+	\qquad
+	\underbrace{\nu = \frac{\eta}{\rho_0}}_{\text{kinematic viscosity}},
+	\label{eq:shear}
+\end{equation}
+where $\eta$ is the shear viscosity. The shear mode is dissipative, not
+propagating. In the spherical-top limit ($\lambda = 0$), the
+translational transverse sector has no propagating wave; any propagating
+transverse mode must come from the spin or nematic sector.
+
+\subsection{Spin Sector}
+\label{sec:spin-sector}
+
+\subsubsection{Vortex-Spin Wave (Transverse)}
+
+Perturbing the spin density transversally, the spin and momentum
+equations couple through the antisymmetric stress. In the
+short-wavelength limit $k \to \infty$ the spin mode decouples from the
+diffusive velocity mode and
+\begin{equation}
+	\underbrace{\omega^2 \simeq c_{\mathrm{vortex}}^2 k^2}_{\text{vortex-spin dispersion}},
+	\qquad
+	\underbrace{c_{\mathrm{vortex}} = \frac{\sqrt{\chi_\rho}}{\tau_s}}_{\text{vortex-spin speed}}.
+	\label{eq:vortex-spin}
+\end{equation}
+This is the vortex-spin wave, with two circular polarizations $(\pm)$.
+It is the propagating transverse mode of the spin sector, and its speed
+is identified with the emergent speed of light.
+
+\subsubsection{Spin Relaxation (Longitudinal)}
+
+For longitudinal spin perturbations, the spin equation is purely
+relaxational:
+\begin{equation}
+	\underbrace{\omega = -\frac{i}{\tau_s}}_{\text{spin relaxation}}.
+	\label{eq:spin-relaxation}
+\end{equation}
+The longitudinal spin has no propagating branch; it decays on the spin
+relaxation timescale.
+
+\subsection{Nematic Sector}
+\label{sec:nematic-sector}
+
+The nematic perturbation decomposes into trace, traceless symmetric, and
+antisymmetric parts. The trace is slaved to the density
+($\hat{\mathcal{A}}_{aa} = 0$ by construction), so only the traceless
+symmetric part is dynamical.
+
+\subsubsection{Nematic Relaxation (Transverse)}
+
+For transverse nematic perturbations, the linearized nematic equation is
+\begin{equation}
+	\underbrace{-i\omega \, \delta \hat{\mathcal{A}}_{ab}}_{\text{rate}}
+	= \underbrace{-\frac{\delta \hat{\mathcal{A}}_{ab}}{\tau_a}}_{\text{relaxation}}
+	+ \underbrace{i \mathcal{I}_0 k \, \delta u_{ab}^+}_{\text{Jeffery driving}}
+	+ \ldots,
+	\label{eq:nematic-linear}
+\end{equation}
+where $\mathcal{I}_0$ is the isotropic nematic moment and the Jeffery
+coupling at linear order reduces to the strain-rate driving. The
+dispersion relation is
+\begin{equation}
+	\underbrace{\omega = -\frac{i}{\tau_a} + \mathcal{O}(k^2)}_{\text{nematic dispersion}}.
+	\label{eq:nematic-dispersion}
+\end{equation}
+The nematic mode is relaxational on the uniform background. The Jeffery
+coupling contributes at $\mathcal{O}(k^2)$, giving a propagating
+correction at longer wavelengths, but the leading behavior is
+relaxation.
+
+\subsubsection{Nematic Longitudinal}
+
+For longitudinal nematic perturbations, the Jeffery term is proportional
+to $k \, \delta u_\parallel$, which is the sound mode. The longitudinal
+nematic mode is slaved to sound and does not constitute an independent
+branch.
+
+\subsection{Hybrid Mode on the Helical Background}
+\label{sec:hybrid-mode}
+
+On the uniform background, the nematic-spin coupling
+$c_2 \kappa_2 \mathrm{Im}(\cQ \hat{\mathcal{A}} \cP^* e_k)$ is quadratic
+in perturbations, so it does not contribute at linear order. The nematic
+and spin sectors are decoupled at the linear level.
+
+On the helical soliton background, where $\cQ_0 \neq 0$ and
+$\hat{\mathcal{A}}_{ab}^{(0)} \neq 0$, the coupling becomes linear and
+the transverse spin, nematic, and velocity modes hybridize. The
+resulting $3 \times 3$ system has three branches:
+
+\begin{enumerate}
+	\item \textbf{The vortex-spin wave} (spin-dominated),
+	with speed $\omega^2 \simeq c_{\mathrm{vortex}}^2 k^2$ at short
+	wavelengths.
+	\item \textbf{The nematic relaxation mode} (nematic-dominated),
+	with $\omega \simeq -i/\tau_a$.
+	\item \textbf{A hybrid mode} (mixed),
+	with mixed spin and nematic character, whose speed depends on the
+	background coupling $c_2 \kappa_2 \cQ_0 \hat{\mathcal{A}}_0$.
+\end{enumerate}
+
+
+The hybrid mode is a soliton-specific excitation. It does not exist in
+the vacuum, and its properties depend on the soliton background. Its
+dispersion relation is the eigenvalue of the $3 \times 3$ matrix derived
+from the linearized spin, nematic, and momentum equations.
+
+\subsection{Summary of the Linear Spectrum}
+\label{sec:spectrum-summary}
+
+The linear spectrum is summarized in Table~\ref{tab:spectrum}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}llll@{}}
+		\toprule
+		Branch & Sector & Dispersion & Character \\
+		\midrule
+		Sound & Translational long. & $\omega^2 = c_s^2 k^2$ & Propagating \\
+		Shear & Translational trans. & $\omega = -i \nu k^2$ & Diffusive \\
+		Vortex-spin ($\pm$) & Spin trans. & $\omega^2 = c_{\mathrm{vortex}}^2 k^2$ & Propagating \\
+		Spin relaxation & Spin long. & $\omega = -i/\tau_s$ & Relaxational \\
+		Nematic relaxation & Nematic trans. & $\omega = -i/\tau_a$ & Relaxational \\
+		Nematic long. & Nematic long. & slaved to sound & Not independent \\
+		Hybrid & Spin + nematic & mixed & Propagating (soliton only) \\
+		\bottomrule
+	\end{tabular}
+	\caption{The linear spectrum of the quaternionic gyron spin fluid.}
+	\label{tab:spectrum}
+\end{table}
+
+The census gives four propagating branches (sound, two vortex-spin
+polarizations, hybrid), three relaxational (shear, spin-longitudinal,
+nematic), and one slaved (nematic trace). The structure is determined
+by the moment hierarchy and the closure, and is independent of the
+detailed soliton profile. The hybrid mode is the only branch that
+requires the soliton background; all others exist in the vacuum.
+
+\subsection{The Vortex-Spin Wave Speed}
+\label{sec:vortex-spin-speed}
+
+The vortex-spin wave speed is
+\begin{equation}
+	\underbrace{c_{\mathrm{vortex}} = \frac{\sqrt{\chi_\rho}}{\tau_s}}_{\text{vortex-spin speed}}.
+	\label{eq:vortex-spin-speed}
+\end{equation}
+This is the speed of the propagating transverse mode of the spin sector.
+It is determined by the spin susceptibility $\chi_\rho$ and the spin
+relaxation time $\tau_s$.
+
+In the marginal regime, where the gyron thermal speed equals the
+vortex-spin wave speed,
+\begin{equation}
+	\underbrace{v_{\mathrm{th}} = c_{\mathrm{vortex}}}_{\text{marginal condition}},
+	\qquad
+	\underbrace{v_{\mathrm{th}} = \sqrt{\frac{k_B T}{m}}}_{\text{thermal speed}},
+	\label{eq:marginal}
+\end{equation}
+the collective transverse dynamics acquire an emergent Lorentz
+invariance. This is the subject of Section~\ref{sec:explains-relativity}.
+
+\subsection{The Sound Speed}
+\label{sec:sound-speed}
+
+The sound speed is
+\begin{equation}
+	\underbrace{c_s^2 = \left. \frac{\partial P}{\partial \rho}
+		\right|_S}_{\text{sound speed}}
+	+ \underbrace{\left. \frac{\partial \Pi^{(s)}}{\partial \rho}
+		\right|_S}_{\text{spin pressure}}
+	+ \underbrace{(\text{nematic contribution})}_{\text{shape-dependent}},
+	\label{eq:sound-speed}
+\end{equation}
+where the derivatives are taken at constant entropy. The sound speed
+includes contributions from the translational pressure, the spin
+pressure, and the nematic order parameter.
+
+\subsection{The Shear Viscosity}
+\label{sec:shear-viscosity}
+
+The shear viscosity is
+\begin{equation}
+	\underbrace{\eta = \rho_0 \nu}_{\text{shear viscosity}},
+	\label{eq:shear-viscosity}
+\end{equation}
+where $\nu$ is the kinematic viscosity. In the relaxation-time
+approximation,
+\begin{equation}
+	\underbrace{\nu = \frac{k_B T \tau}{m}}_{\text{kinematic viscosity}}.
+	\label{eq:kinematic-viscosity}
+\end{equation}
+The shear mode is diffusive, with diffusion coefficient $\nu$.
+
+\subsection{The Spin Relaxation Time}
+\label{sec:spin-relaxation-time}
+
+The spin relaxation time $\tau_s$ determines the vortex-spin wave speed
+and the spin relaxation rate. It is a fundamental parameter of the
+model. In the slaved regime, it is related to the rotational viscosity
+by
+\begin{equation}
+	\underbrace{\eta_r = \frac{\rho \chi_\rho}{\tau_s}}_{\text{slaved regime}}.
+	\label{eq:rotational-viscosity}
+\end{equation}
+
+\subsection{The Nematic Relaxation Time}
+\label{sec:nematic-relaxation-time}
+
+The nematic relaxation time $\tau_a$ determines the nematic relaxation
+rate. It is related to the nematic spin transport coefficient by
+\begin{equation}
+	\underbrace{D_a = \frac{k_B T \tau_a}{m}}_{\text{nematic transport}}.
+	\label{eq:nematic-transport}
+\end{equation}
+The nematic mode is relaxational, with rate $1/\tau_a$.
+
+\subsection{The Marginal Regime}
+\label{sec:marginal-regime}
+
+The marginal regime is defined by the condition
+\begin{equation}
+	\underbrace{v_{\mathrm{th}} = c_{\mathrm{vortex}}}_{\text{marginal}},
+	\label{eq:marginal-condition}
+\end{equation}
+where $v_{\mathrm{th}}$ is the gyron thermal speed and
+$c_{\mathrm{vortex}}$ is the vortex-spin wave speed. Solving for the
+temperature,
+\begin{equation}
+	\underbrace{k_B T = \frac{m \chi_\rho}{\tau_s^2}}_{\text{marginal temperature}}
+	= \underbrace{m c_{\mathrm{vortex}}^2}_{\text{rest mass energy}}.
+	\label{eq:marginal-temperature}
+\end{equation}
+The gyrons are at the relativistic temperature: their thermal energy
+equals their rest mass energy. This is the Galilean analogue of a
+relativistic gas.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\part{The Madelung Surface}
+% ============================================================
+
+% ------------------------------------------------------------
+\section{The Madelung Variables}
+\label{sec:madelung}
+% ------------------------------------------------------------
+
+The closed system of Section~\ref{sec:closure} admits a distinguished
+class of configurations on which the spin amplitude and spin phase
+gradient satisfy equations of the Madelung form. In this section we
+define the Madelung variables and derive the form of the equations they
+satisfy.
+
+\subsection{The Spin Amplitude}
+\label{sec:spin-amplitude}
+
+The quaternionic spin density is
+\begin{equation}
+	\underbrace{\cQ = \int m q f \, \dd\Gamma}_{\text{quaternionic spin density}}
+	\in \underbrace{\Hh}_{\text{quaternion algebra}}.
+	\label{eq:spin-density}
+\end{equation}
+We decompose it into amplitude and orientation:
+\begin{equation}
+	\underbrace{\cQ = \cA \, U}_{\text{polar decomposition}},
+	\qquad
+	\underbrace{\cA = |\cQ| = \sqrt{\cQ \bar{\cQ}}}_{\text{spin amplitude}},
+	\qquad
+	\underbrace{U = \cQ/|\cQ| \in S^3}_{\text{orientation quaternion}}.
+	\label{eq:polar-decomposition}
+\end{equation}
+The spin amplitude $\cA$ is a scalar field. The orientation $U$ is a
+unit quaternion field.
+
+The spin amplitude plays the role of the Madelung density:
+\begin{equation}
+	\underbrace{\cA \leftrightarrow \rho_{\mathrm{Madelung}}}_{\text{density association}}.
+	\label{eq:amplitude-association}
+\end{equation}
+
+\subsection{The Spin Phase Gradient}
+\label{sec:spin-phase-gradient}
+
+The orientation quaternion defines a Maurer-Cartan form:
+\begin{equation}
+	\underbrace{\omega_i = \bar{U} \partial_i U}_{\text{Maurer-Cartan form}}
+	\in \underbrace{\mathfrak{su}(2)}_{\text{Lie algebra}}.
+	\label{eq:maurer-cartan}
+\end{equation}
+The spin phase gradient is the imaginary part of the Maurer-Cartan form:
+\begin{equation}
+	\underbrace{v_i = \mathrm{Im}(\bar{U} \partial_i U)}_{\text{spin phase gradient}}.
+	\label{eq:spin-phase-gradient}
+\end{equation}
+The Madelung velocity is defined as
+\begin{equation}
+	\underbrace{\mathbf{v}_{\mathrm{Madelung}} = \frac{\hbar}{M}
+		\mathrm{Im}(\bar{U} \nabla U)}_{\text{Madelung velocity}},
+	\label{eq:madelung-velocity}
+\end{equation}
+where $M$ is the soliton effective mass.
+
+The Madelung velocity plays the role of the fluid velocity:
+\begin{equation}
+	\underbrace{\mathbf{v}_{\mathrm{Madelung}} \leftrightarrow
+		\mathbf{v}_{\mathrm{fluid}}}_{\text{velocity association}}.
+	\label{eq:velocity-association}
+\end{equation}
+
+\subsection{The Curl-Free Condition}
+\label{sec:curl-free}
+
+The Maurer-Cartan form has a curvature:
+\begin{equation}
+	\underbrace{F_{ij} = \partial_i \omega_j - \partial_j \omega_i
+		+ [\omega_i, \omega_j]}_{\text{curvature}},
+	\label{eq:curvature}
+\end{equation}
+where $[\cdot, \cdot]$ is the commutator in $\mathfrak{su}(2)$. For a
+pure gauge configuration $U$, the curvature vanishes:
+\begin{equation}
+	\underbrace{F_{ij} = 0}_{\text{curl-free condition}}.
+	\label{eq:curl-free}
+\end{equation}
+This is the non-abelian curl-free condition. In the abelian limit
+(complex phase), it reduces to the standard condition
+$\nabla \times \mathbf{v} = 0$.
+
+The curl-free condition ensures that the Madelung velocity is a pure
+gradient:
+\begin{equation}
+	\underbrace{\mathbf{v}_{\mathrm{Madelung}} = \nabla \phi}_{\text{gradient}},
+	\label{eq:gradient}
+\end{equation}
+where $\phi$ is a scalar phase. In the quaternionic case, the phase is
+the orientation angle.
+
+\subsection{The Amplitude Equation}
+\label{sec:amplitude-equation}
+
+Starting from the spin balance equation
+\begin{equation}
+	\underbrace{\partial_t \cQ_a + \partial_j (u_j \cQ_a) +
+		\Omega_{ab} \cQ_b + \lambda \mathcal{S}_{ab} \cQ_b
+		+ \partial_j Q_{ja} = \mathcal{C}^{(\cQ)}_a}_{\text{spin balance}},
+	\label{eq:spin-balance}
+\end{equation}
+and projecting onto $\bar{U}$, we obtain the amplitude equation:
+\begin{equation}
+	\underbrace{\partial_t \cA + \partial_j (u_j \cA)}_{\text{amplitude transport}}
+	= \underbrace{\mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)})}_{\text{collision source}}
+	\underbrace{- \mathrm{Re}(\bar{U} \partial_j Q_j)}_{\text{flux divergence}}.
+	\label{eq:amplitude-equation}
+\end{equation}
+With the spin flux closure
+\begin{equation}
+	\underbrace{Q_{ia} = -D_s \partial_i \cQ_a
+		- c_2 D_a \partial_i (\cQ_b \hat{\mathcal{A}}_{ba})
+		+ \ldots}_{\text{spin flux}},
+	\label{eq:spin-flux}
+\end{equation}
+the amplitude equation becomes
+\begin{equation}
+	\underbrace{\partial_t \cA + \partial_j (u_j \cA)}_{\text{transport}}
+	= \underbrace{D_{\mathrm{eff}} \nabla^2 \cA}_{\text{diffusion}}
+	+ \underbrace{\cA \, \mathrm{Re}(\bar{U} \nabla^2 U)}_{\text{orientation curvature}}
+	+ \underbrace{\mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)})}_{\text{source}},
+	\label{eq:amplitude-equation-explicit}
+\end{equation}
+where the effective diffusion coefficient is
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} = D_s + c_2 D_a
+		\mathcal{Q}_{\Hh}}_{\text{effective diffusion}},
+	\qquad
+	\underbrace{\mathcal{Q}_{\Hh} = \mathrm{Re}(\bar{U}
+		\hat{\mathcal{A}} U)}_{\text{alignment scalar}}.
+	\label{eq:effective-diffusion}
+\end{equation}
+
+\subsection{The Momentum Equation}
+\label{sec:momentum-equation}
+
+Differentiating the orientation equation and projecting onto the
+orientation gradient, we obtain the momentum equation for the spin
+phase gradient:
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t v_i + u_j \partial_j v_i}_{\text{material derivative}}
+		+ \underbrace{v_j \partial_i u_j}_{\text{stretching}} \\
+		&\quad = \underbrace{-\partial_i \Phi_{\mathrm{spin}}}_{\text{scalar potential}}
+		+ \underbrace{\mathcal{Q}_i}_{\text{quantum potential}}
+		+ \underbrace{\mathcal{S}_i}_{\text{collision source}}
+		+ \underbrace{\mathcal{N}_i}_{\text{non-abelian curvature}},
+	\end{aligned}
+	\label{eq:momentum-equation}
+\end{equation}
+where the individual terms are defined below.
+
+\subsubsection{Scalar Potential}
+
+\begin{equation}
+	\underbrace{\Phi_{\mathrm{spin}}}_{\text{scalar potential}}
+	= \underbrace{\tfrac{1}{2} |\mathbf{v}|^2}_{\text{kinetic energy}}
+	+ \underbrace{\Omega_{jk} \mathrm{Im}(\bar{U} e_j e_k U)}_{\text{vorticity coupling}}
+	+ \underbrace{\lambda S_{jk} \mathrm{Im}(\bar{U} e_j e_k U)}_{\text{strain coupling}}.
+	\label{eq:scalar-potential}
+\end{equation}
+
+\subsubsection{Quantum Potential}
+
+\begin{equation}
+	\underbrace{\mathcal{Q}_i}_{\text{quantum potential}}
+	= \underbrace{D_{\mathrm{eff}} \partial_i \left(
+		\frac{\nabla^2 \sqrt{\cA}}{\sqrt{\cA}} \right)}_{\text{Madelung term}}
+	+ \underbrace{\mathcal{Q}_i^{\mathrm{corr}}}_{\text{quaternionic correction}},
+	\label{eq:quantum-potential}
+\end{equation}
+where the quaternionic correction involves the orientation curvature:
+\begin{equation}
+	\underbrace{\mathcal{Q}_i^{\mathrm{corr}}}_{\text{correction}}
+	= \underbrace{D_{\mathrm{eff}} \, \mathrm{Im}\left( \bar{U} \partial_i
+		\left( \frac{\nabla^2 U}{U} \right) \right)}_{\text{non-abelian Laplacian}}.
+	\label{eq:quantum-potential-correction}
+\end{equation}
+
+\subsubsection{Collision Source}
+
+\begin{equation}
+	\underbrace{\mathcal{S}_i}_{\text{collision source}}
+	= \underbrace{\mathrm{Im}\left( \bar{U} \partial_i \left(
+		\frac{1}{\cA} \mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)}) \right)
+		\right)}_{\text{projection of collision integral}}.
+	\label{eq:collision-source}
+\end{equation}
+
+\subsubsection{Non-Abelian Curvature}
+
+\begin{equation}
+	\underbrace{\mathcal{N}_i}_{\text{non-abelian curvature}}
+	= \underbrace{\mathrm{Im}\left( \bar{U} [\omega_i, \omega_j]
+		\partial_j U \right)}_{\text{commutator of Maurer-Cartan forms}}.
+	\label{eq:non-abelian-curvature}
+\end{equation}
+This term vanishes when the curvature $F_{ij} = 0$, which is the
+curl-free condition on the Madelung surface.
+
+\subsection{The Madelung Form}
+\label{sec:madelung-form}
+
+On the Madelung surface, the collision source and the non-abelian
+curvature vanish, and the equations reduce to the Madelung form:
+\begin{align}
+	&\underbrace{\partial_t \cA + \nabla \cdot (\cA \mathbf{v}) = 0}_{\text{continuity}}, \\
+	&\underbrace{\partial_t \mathbf{v} + (\mathbf{v} \cdot \nabla) \mathbf{v}
+		= -\nabla \Phi_{\mathrm{spin}} + D_{\mathrm{eff}} \nabla \left(
+		\frac{\nabla^2 \sqrt{\cA}}{\sqrt{\cA}} \right)}_{\text{momentum}}, \\
+	&\underbrace{\nabla \times \mathbf{v} = 0}_{\text{curl-free}}, \\
+	&\underbrace{\Phi_{\mathrm{spin}} = \Phi_{\mathrm{spin}}(\cA, \mathbf{v})}_{\text{closure}}.
+	\label{eq:madelung-form}
+\end{align}
+These are the Madelung-transformed Schr\"odinger equations for the
+spatial part of the wavefunction, with the spin part carried by the
+orientation quaternion.
+
+\subsection{The Calibration of \texorpdfstring{$\hbar$}{hbar}}
+\label{sec:calibration-hbar}
+
+The quantum potential coefficient $D_{\mathrm{eff}}$ is calibrated to
+the physical value of Planck's constant:
+\begin{equation}
+	\underbrace{|D_{\mathrm{eff}}| = \frac{\hbar}{2M}}_{\text{calibration}},
+	\label{eq:calibration-hbar}
+\end{equation}
+where $M$ is the soliton effective mass. This is the calibration
+condition that ties the toy model to the physical value of $\hbar$.
+
+With the measured values $\hbar = 1.055 \times 10^{-34}$ J$\cdot$s and
+$M = m_e = 9.109 \times 10^{-31}$ kg:
+\begin{equation}
+	\underbrace{|D_{\mathrm{eff}}| = 5.79 \times 10^{-5} \,
+		\mathrm{m}^2/\mathrm{s}}_{\text{calibrated value}}.
+	\label{eq:calibrated-diffusion}
+\end{equation}
+
+The sign condition for the Madelung form is
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} < 0}_{\text{Madelung sign}},
+	\label{eq:madelung-sign}
+\end{equation}
+which forces a strongly prolate gyron. This is the subject of
+Section~\ref{sec:sign}.
+
+\subsection{The Madelung Surface}
+\label{sec:madelung-surface}
+
+The Madelung surface is the set of gyron configurations satisfying:
+
+\begin{enumerate}
+	\item $\cA = |\cQ|$ \hfill (amplitude definition),
+	\item $\mathbf{v} = (\hbar/M) \mathrm{Im}(\bar{U} \nabla U)$
+	\hfill (velocity definition),
+	\item $F_{ij} = 0$ \hfill (curl-free),
+	\item $\partial_t \cA + \nabla \cdot (\cA \mathbf{v}) = 0$
+	\hfill (continuity),
+	\item $\partial_t \mathbf{v} + (\mathbf{v} \cdot \nabla)
+	\mathbf{v} = -\nabla \Phi_{\mathrm{spin}} + D_{\mathrm{eff}}
+	\nabla (\nabla^2 \sqrt{\cA}/\sqrt{\cA})$ \hfill (momentum),
+	\item $\Phi_{\mathrm{spin}} = \Phi_{\mathrm{spin}}(\cA,
+	\mathbf{v})$ \hfill (closure).
+\end{enumerate}
+
+This is the constraint surface on which the gyron dynamics reduces to
+the Madelung form.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Closure Conditions}
+\label{sec:closure-conditions}
+% ------------------------------------------------------------
+
+The Madelung form \eqref{eq:madelung-form} is not a general property of
+the gyron dynamics. It holds only on a constraint surface, defined by
+three closure conditions. In this section we state these conditions
+exactly and derive the constraints they impose on the gyron fields.
+
+\subsection{Closure Condition 1: Amplitude}
+\label{sec:closure-1}
+
+The amplitude equation is
+\begin{equation}
+	\underbrace{\partial_t \cA + \partial_j (u_j \cA)}_{\text{amplitude transport}}
+	= \underbrace{-D_s \nabla^2 \cA}_{\text{isotropic diffusion}}
+	\underbrace{- D_s \cA \, \mathrm{Re}(\bar{U} \nabla^2 U)}_{\text{orientation curvature}}
+	\underbrace{- c_2 D_a \, \mathrm{Re}(\bar{U} \nabla^2 (\cA U
+		\hat{\mathcal{A}}))}_{\text{nematic correction}}
+	+ \underbrace{\mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)})}_{\text{collision source}}.
+	\label{eq:closure-1-exact}
+\end{equation}
+
+For the Madelung continuity equation
+\begin{equation}
+	\underbrace{\partial_t \cA + \nabla \cdot (\cA \mathbf{v}) = 0}_{\text{Madelung continuity}}
+	\label{eq:madelung-continuity}
+\end{equation}
+to hold, we require
+\begin{equation}
+	\boxed{
+		\underbrace{-D_s \nabla^2 \cA - D_s \cA \, \mathrm{Re}(\bar{U}
+			\nabla^2 U) - c_2 D_a \, \mathrm{Re}(\bar{U} \nabla^2 (\cA U
+			\hat{\mathcal{A}})) + \mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)})}
+		_{\text{right-hand side of \eqref{eq:closure-1-exact}}}
+		= \underbrace{-\partial_j ((u_j - v_j) \cA)}_{\text{advection mismatch}}.
+	}
+	\label{eq:closure-1}
+\end{equation}
+
+This is the first closure condition. It relates the orientation
+dynamics, the spin flux, the collision integral, and the difference
+between the fluid velocity and the Madelung velocity.
+
+In the case where the fluid velocity equals the Madelung velocity
+($u_j = v_j$) and the collision integral is orthogonal to the
+orientation ($\mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)}) = 0$), the
+condition simplifies to
+\begin{equation}
+	\underbrace{-D_s \nabla^2 \cA - D_s \cA \, \mathrm{Re}(\bar{U}
+		\nabla^2 U) - c_2 D_a \, \mathrm{Re}(\bar{U} \nabla^2 (\cA U
+		\hat{\mathcal{A}})) = 0}_{\text{simplified closure 1}}.
+	\label{eq:closure-1-simplified}
+\end{equation}
+
+\subsection{Closure Condition 2: Momentum}
+\label{sec:closure-2}
+
+The momentum equation for the spin phase gradient is
+\begin{equation}
+	\begin{aligned}
+		&\underbrace{\partial_t v_i + u_j \partial_j v_i}_{\text{material derivative}}
+		+ \underbrace{v_j \partial_i u_j}_{\text{stretching}}
+		+ \underbrace{\mathrm{Im}(\bar{U} [\omega_i, \omega_j] \partial_j U)}
+		_{\text{non-abelian curvature}} \\
+		&\quad = \underbrace{-\partial_i \Phi_{\mathrm{spin}}}_{\text{scalar potential}}
+		+ \underbrace{D_{\mathrm{eff}} \partial_i \left(
+			\frac{\nabla^2 \sqrt{\cA}}{\sqrt{\cA}} \right)}_{\text{quantum potential}}
+		+ \underbrace{\mathrm{Im}\left( \bar{U} \partial_i \left(
+			\frac{1}{\cA} \mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)}) \right)
+			\right)}_{\text{collision source}}.
+	\end{aligned}
+	\label{eq:closure-2-exact}
+\end{equation}
+
+For the Madelung momentum equation
+\begin{equation}
+	\underbrace{\partial_t \mathbf{v} + (\mathbf{v} \cdot \nabla) \mathbf{v}
+		= -\nabla \Phi_{\mathrm{spin}} + D_{\mathrm{eff}} \nabla \left(
+		\frac{\nabla^2 \sqrt{\cA}}{\sqrt{\cA}} \right)}_{\text{Madelung momentum}}
+	\label{eq:madelung-momentum}
+\end{equation}
+to hold, we require
+\begin{equation}
+	\boxed{
+		\underbrace{\mathrm{curl}\left( \mathcal{L}^{(A)} + \mathcal{L}^{(B)}
+			+ \mathcal{L}^{(D)} + \mathcal{L}^{(F)} \right) = 0}_{\text{curl cancellation}},
+	}
+	\label{eq:closure-2}
+\end{equation}
+where the terms are
+\begin{align}
+	\underbrace{\mathcal{L}_i^{(A)}}_{\text{orientation time derivative}}
+	&= \mathrm{Im}(\bar{U} \partial_i (\cA \partial_t U)), \\
+	\underbrace{\mathcal{L}_i^{(B)}}_{\text{orientation advection}}
+	&= \mathrm{Im}(\bar{U} \partial_i (\cA u_j \partial_j U)), \\
+	\underbrace{\mathcal{L}_i^{(D)}}_{\text{collision source}}
+	&= \mathrm{Im}\left( \bar{U} \partial_i \left( \frac{1}{\cA}
+	\mathrm{Re}(\bar{U} \mathcal{C}^{(\cQ)}) \right) \right), \\
+	\underbrace{\mathcal{L}_i^{(F)}}_{\text{stretching}}
+	&= v_{0,j} \partial_i u_j.
+	\label{eq:closure-2-terms}
+\end{align}
+
+The terms $\mathcal{L}^{(C)}$ (spin flux divergence) and
+$\mathcal{L}^{(E)}$ (non-abelian curvature) are already gradients or
+vanish on the Madelung surface, so they do not contribute to the curl
+condition.
+
+This is the second closure condition. It is the most restrictive.
+
+The curl condition can be satisfied in two ways:
+\begin{enumerate}
+	\item \textbf{Individual cancellation:} each term is curl-free
+	separately.
+	\item \textbf{Pairwise cancellation:} the non-gradient parts of
+	different terms cancel each other.
+\end{enumerate}
+
+The pairwise cancellation is the more general mechanism and is the one
+relevant for the localized breather.
+
+\subsection{Closure Condition 3: Scalar Potential}
+\label{sec:closure-3}
+
+The scalar potential is
+\begin{equation}
+	\underbrace{\Phi_{\mathrm{spin}}}_{\text{scalar potential}}
+	= \underbrace{\tfrac{1}{2} |\mathbf{v}|^2}_{\text{kinetic energy}}
+	+ \underbrace{\Omega_{jk} \mathrm{Im}(\bar{U} e_j e_k U)}_{\text{vorticity coupling}}
+	+ \underbrace{\lambda S_{jk} \mathrm{Im}(\bar{U} e_j e_k U)}_{\text{strain coupling}}.
+	\label{eq:closure-3-exact}
+\end{equation}
+
+For the closure condition
+\begin{equation}
+	\underbrace{\Phi_{\mathrm{spin}} = \Phi_{\mathrm{spin}}(\cA, \mathbf{v})
+	}_{\text{closure}}.
+	\label{eq:closure-3}
+\end{equation}
+to hold, we require
+\begin{equation}
+	\boxed{
+		\underbrace{\Omega_{jk} \mathrm{Im}(\bar{U} e_j e_k U)
+			+ \lambda S_{jk} \mathrm{Im}(\bar{U} e_j e_k U)}_{\text{orientation-fluid coupling}}
+		= \underbrace{\Phi_{\mathrm{couple}}(\cA, \mathbf{v})}_{\text{function of } \cA, \mathbf{v}}.
+	}
+	\label{eq:closure-3-explicit}
+\end{equation}
+
+This is the third closure condition. It says that the coupling of the
+orientation to the fluid vorticity and strain must be expressible as a
+function of $\cA$ and $\mathbf{v}$ alone. No independent dependence on
+$U$, $\hat{\mathcal{A}}$, $\Omega_{jk}$, or $S_{jk}$ is allowed.
+
+The orientation coupling is related to the Jeffery coupling:
+\begin{equation}
+	\underbrace{\Omega_{jk} \mathrm{Im}(\bar{U} e_j e_k U)
+		+ \lambda S_{jk} \mathrm{Im}(\bar{U} e_j e_k U)}_{\text{orientation coupling}}
+	= \underbrace{2 \, \mathrm{Im}(\bar{U} \dot{U})}_{\text{time component of Maurer-Cartan}}.
+	\label{eq:closure-3-jeffery}
+\end{equation}
+
+This is the time component of the Maurer-Cartan form. It is the rate of
+change of the spin phase.
+
+For the closure to hold, the rate of change of the spin phase must be a
+function of $\cA$ and $\mathbf{v}$ only.
+
+\subsection{The Calibration of \texorpdfstring{$\hbar$}{hbar}}
+\label{sec:calibration}
+
+On the Madelung surface, the quantum potential coefficient is
+calibrated to the physical value of Planck's constant:
+\begin{equation}
+	\boxed{
+		\underbrace{D_{\mathrm{eff}} = D_s + c_2 D_a \mathcal{Q}_{\Hh}}
+		_{\text{effective diffusion}}
+		= \underbrace{-\frac{\hbar}{2M}}_{\text{calibration}}.
+	}
+	\label{eq:calibration}
+\end{equation}
+
+With the measured values $\hbar = 1.055 \times 10^{-34}$ J$\cdot$s and
+$M = m_e = 9.109 \times 10^{-31}$ kg:
+\begin{equation}
+	\underbrace{|D_{\mathrm{eff}}| = 5.79 \times 10^{-5} \,
+		\mathrm{m}^2/\mathrm{s}}_{\text{calibrated value}}.
+	\label{eq:calibrated-value}
+\end{equation}
+
+This is a calibration, not a derivation. The model uses the measured
+value of $\hbar$ to fix one combination of the kinetic parameters.
+
+\subsection{The Sign Condition}
+\label{sec:sign-condition}
+
+The Madelung form requires
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} < 0}_{\text{Madelung sign}}.
+	\label{eq:sign-condition}
+\end{equation}
+
+With $D_{\mathrm{eff}} = D_s + c_2 D_a \mathcal{Q}_{\Hh}$ and
+$D_s > 0$ (by the second law), this requires
+\begin{equation}
+	\underbrace{c_2 D_a \mathcal{Q}_{\Hh} < -D_s}_{\text{sign condition}}.
+	\label{eq:sign-condition-explicit}
+\end{equation}
+
+Since $\mathcal{Q}_{\Hh} \in [-2/3, 2/3]$ and $D_s \sim D_a$, this
+forces
+\begin{equation}
+	\boxed{
+		\underbrace{|c_2| > \frac{3}{2}}_{\text{shape constraint}},
+	}
+	\label{eq:shape-constraint}
+\end{equation}
+which requires a strongly prolate gyron. Intermediate
+(near-spherical) shapes are excluded, and concave profiles are not
+required.
+
+For a prolate gyron in a shear flow, the nematic principal axis aligns
+with the local stretching direction while the spin is perpendicular to
+it, giving $\mathcal{Q}_{\Hh} < 0$ and satisfying the sign condition
+for a range of helical pitches.
+
+\subsection{Summary of the Closure Conditions}
+\label{sec:closure-summary-later-2}
+
+The three closure conditions are summarized in
+Table~\ref{tab:closure-conditions}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Condition & Equation & Constraint \\
+		\midrule
+		C1 (Amplitude) & Eq.~\eqref{eq:closure-1} & Advection alignment \\
+		C2 (Momentum) & Eq.~\eqref{eq:closure-2} & Curl cancellation \\
+		C3 (Scalar potential) & Eq.~\eqref{eq:closure-3-explicit} & Jeffery coupling \\
+		Calibration & Eq.~\eqref{eq:calibration} & $\hbar$ \\
+		Sign condition & Eq.~\eqref{eq:sign-condition} & Prolate gyron \\
+		\bottomrule
+	\end{tabular}
+	\caption{The closure conditions of the Madelung surface.}
+	\label{tab:closure-conditions}
+\end{table}
+
+The closure conditions are exact, checkable, and falsifiable. They
+define the Madelung surface on which the gyron dynamics reduces to the
+Madelung form.
+
+\subsection{Physical Interpretation}
+\label{sec:closure-interpretation}
+
+The three closure conditions have clear physical interpretations:
+
+\begin{enumerate}
+	\item \textbf{Closure Condition 1 (Amplitude):} The spin amplitude
+	is advected by the fluid velocity and diffused by the spin flux.
+	For the Madelung continuity equation to hold, the diffusion and
+	source terms must cancel.
+	
+	\item \textbf{Closure Condition 2 (Momentum):} The spin phase
+	gradient evolves by the Madelung momentum equation. For this to
+	hold, the non-gradient terms in the orientation equation must
+	cancel.
+	
+	\item \textbf{Closure Condition 3 (Scalar potential):} The scalar
+	potential must close at the Madelung level. This requires the
+	orientation-fluid coupling to be expressible as a function of
+	$\cA$ and $\mathbf{v}$ alone.
+\end{enumerate}
+
+The closure conditions are not automatically satisfied. They define a
+constraint surface in the space of gyron configurations.
+
+\subsection{The Madelung Surface as a Constraint Surface}
+\label{sec:madelung-surface-constraint}
+
+The Madelung surface is defined by the closure conditions. It is a
+constraint surface in the space of gyron configurations.
+
+Configurations on the surface satisfy the Madelung equations.
+Configurations off the surface do not.
+
+The surface is not invariant under the gyron dynamics in general. A
+configuration on the surface may evolve off it. The surface is
+invariant only if the closure conditions are preserved by the
+evolution, which requires additional consistency conditions.
+
+For the localized breather, the surface is invariant by construction:
+the breather is a solution of the Madelung equations, so it remains on
+the surface.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{The Sign Problem and Its Resolution}
+\label{sec:sign}
+% ------------------------------------------------------------
+
+The Madelung form \eqref{eq:madelung-form} requires a specific sign of
+the effective diffusion coefficient. In this section we show that the
+naive sign is the wrong one for localization, and that the resolution
+comes from the oscillatory character of the breathing soliton.
+
+\subsection{The Sign Problem}
+\label{sec:sign-problem}
+
+The amplitude equation on the Madelung surface is
+\begin{equation}
+	\underbrace{\partial_t \cA + \partial_j (v_j \cA)}_{\text{Madelung transport}}
+	= \underbrace{-D_{\mathrm{eff}} \nabla^2 \cA}_{\text{diffusion}}
+	+ \underbrace{D_{\mathrm{eff}} \cA (\theta')^2}_{\text{phase gradient}}
+	+ \ldots
+	\label{eq:amplitude-sign}
+\end{equation}
+
+The two terms on the right-hand side have opposite signs. The diffusion
+term
+\begin{equation}
+	\underbrace{-D_{\mathrm{eff}} \nabla^2 \cA}_{\text{diffusion}}
+	\label{eq:diffusion-term}
+\end{equation}
+is restoring if $D_{\mathrm{eff}} > 0$ and anti-restoring if
+$D_{\mathrm{eff}} < 0$.
+
+The phase gradient term
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} \cA (\theta')^2}_{\text{phase gradient}}
+	\label{eq:phase-gradient-term}
+\end{equation}
+is anti-restoring if $D_{\mathrm{eff}} > 0$ and restoring if
+$D_{\mathrm{eff}} < 0$.
+
+For a localized solution, we need the total right-hand side to be
+restoring. This requires the phase gradient term to be subdominant, or
+to have the opposite sign.
+
+\subsection{The Naive Sign}
+\label{sec:naive-sign}
+
+Consider the amplitude equation for a steady, one-dimensional breather
+with $\partial_t = 0$ and $\cA = \cA(\xi)$:
+\begin{equation}
+	\underbrace{(v_\xi - c) \cA'}_{\text{advection}}
+	= \underbrace{-D_{\mathrm{eff}} \cA''}_{\text{diffusion}}
+	+ \underbrace{D_{\mathrm{eff}} \cA (\theta')^2}_{\text{phase gradient}}.
+	\label{eq:amplitude-1d}
+\end{equation}
+
+For a localized solution, we need $\cA \to 0$ as $\xi \to \pm\infty$.
+The dominant balance at the core is between the diffusion and the
+phase gradient:
+\begin{equation}
+	\underbrace{-D_{\mathrm{eff}} \cA''}_{\text{diffusion}}
+	\approx \underbrace{-D_{\mathrm{eff}} \cA (\theta')^2}_{\text{phase gradient}}.
+	\label{eq:balance}
+\end{equation}
+This gives
+\begin{equation}
+	\underbrace{\cA'' = \cA (\theta')^2}_{\text{amplitude equation}}.
+	\label{eq:amplitude-ode}
+\end{equation}
+
+For $\theta' > 0$ (real phase gradient), the solution is
+\begin{equation}
+	\underbrace{\cA \sim e^{\pm \int \theta' d\xi}}_{\text{exponential}},
+	\label{eq:exponential-solution}
+\end{equation}
+which is **not localized**. The amplitude grows or decays exponentially
+without bound.
+
+**This is the sign problem.** The amplitude equation has the wrong sign
+for a localized solution.
+
+\subsection{The Sign Condition}
+\label{sec:sign-condition-later-2}
+
+The resolution is that the effective diffusion coefficient must be
+negative:
+\begin{equation}
+	\boxed{
+		\underbrace{D_{\mathrm{eff}} < 0}_{\text{Madelung sign}}.
+	}
+	\label{eq:sign-condition-later-2}
+\end{equation}
+
+With $D_{\mathrm{eff}} < 0$, the amplitude equation becomes
+\begin{equation}
+	\underbrace{-|D_{\mathrm{eff}}| \cA''}_{\text{diffusion}}
+	= \underbrace{-|D_{\mathrm{eff}}| \cA (\theta')^2}_{\text{phase gradient}}.
+	\label{eq:amplitude-ode-negative}
+\end{equation}
+Simplifying:
+\begin{equation}
+	\underbrace{\cA'' = \cA (\theta')^2}_{\text{same equation}}.
+	\label{eq:amplitude-ode-same}
+\end{equation}
+
+**The sign of $D_{\mathrm{eff}}$ does not change the sign of the
+amplitude equation.** The equation is homogeneous in $D_{\mathrm{eff}}$,
+so dividing by $D_{\mathrm{eff}}$ removes the sign.
+
+This is the heart of the sign problem: the sign of $D_{\mathrm{eff}}$
+does not, by itself, resolve the localization problem.
+
+\subsection{The Shape Constraint}
+\label{sec:shape-constraint}
+
+The sign condition $D_{\mathrm{eff}} < 0$ requires
+\begin{equation}
+	\underbrace{D_s + c_2 D_a \mathcal{Q}_{\Hh} < 0}_{\text{sign condition}},
+	\label{eq:sign-condition-explicit-later-2}
+\end{equation}
+where $D_s > 0$ (by the second law of thermodynamics). This requires
+\begin{equation}
+	\underbrace{c_2 D_a \mathcal{Q}_{\Hh} < -D_s}_{\text{negative nematic}},
+	\label{eq:negative-nematic}
+\end{equation}
+or equivalently
+\begin{equation}
+	\boxed{
+		\underbrace{c_2 \mathcal{Q}_{\Hh} < -\frac{D_s}{D_a}}_{\text{shape constraint}}.
+	}
+	\label{eq:shape-constraint-later-2}
+\end{equation}
+
+Since $\mathcal{Q}_{\Hh} \in [-2/3, 2/3]$ and $D_s \sim D_a$, this
+forces
+\begin{equation}
+	\boxed{
+		\underbrace{|c_2| > \frac{3}{2}}_{\text{strongly prolate}},
+	}
+	\label{eq:prolate-constraint}
+\end{equation}
+which requires a strongly prolate gyron. Intermediate
+(near-spherical) shapes are excluded.
+
+This is a **geometric prediction** of the model: the gyron must be a
+strongly elongated, axisymmetric rigid body.
+
+\subsection{The Oscillatory Resolution}
+\label{sec:oscillatory-resolution}
+
+The sign problem is resolved by the **oscillatory character** of the
+breathing soliton. The amplitude is not static:
+\begin{equation}
+	\underbrace{\cA(\xi,t) = \cA_0(\xi) + \delta \cA(\xi)
+		e^{i \omega_{\mathrm{osc}} t}}_{\text{oscillatory amplitude}}.
+	\label{eq:oscillatory-amplitude}
+\end{equation}
+
+The oscillatory correction satisfies a driven oscillator equation:
+\begin{equation}
+	\underbrace{i \omega_{\mathrm{osc}} \delta \cA + (v_\xi \delta \cA)'}
+	_{\text{oscillator}}
+	= \underbrace{-D_s \delta \cA'' - \frac{1}{\tau_s} \delta \cA}
+	_{\text{restoring}}
+	+ \underbrace{\mathcal{F}_0 \mathrm{sech}(\xi/L)}_{\text{driving}}.
+	\label{eq:oscillatory-equation}
+\end{equation}
+
+The driving term comes from the oscillatory vorticity:
+\begin{equation}
+	\underbrace{\mathcal{F}_0 \sim \frac{\rho \chi_\rho}{\tau_s}
+		\mathrm{Re}(\bar{U}_0 \delta \omega_\phi)}_{\text{driving}}.
+	\label{eq:driving}
+\end{equation}
+
+The oscillatory driving term can have **either sign**, depending on the
+phase of the oscillation. At the soliton core, if the driving is
+negative, it can balance the positive phase gradient term and allow a
+localized solution.
+
+**This is the resolution of the sign problem.** The oscillation provides
+the missing degree of freedom that allows localization.
+
+\subsection{The Breather Condition}
+\label{sec:breather-condition}
+
+For the oscillatory correction to provide a restoring force, the
+driving term must be out of phase with the amplitude. This requires
+\begin{equation}
+	\underbrace{\omega_{\mathrm{osc}} = \frac{D_s}{L^2} -
+		\frac{1}{\tau_s}}_{\text{breather condition}}.
+	\label{eq:breather-condition}
+\end{equation}
+
+If this condition holds, the oscillatory correction is purely imaginary
+and the time-averaged correction provides a negative contribution to the
+amplitude equation:
+\begin{equation}
+	\underbrace{\langle \mathcal{F}_{\mathrm{osc}} \delta \cA \rangle
+		\sim -|\mathcal{F}_0|^2 \kappa \, \mathrm{sech}^2(\xi/L)}
+	_{\text{time-averaged correction}},
+	\label{eq:time-averaged}
+\end{equation}
+where $\kappa > 0$.
+
+The negative contribution balances the positive phase gradient term,
+allowing a localized solution.
+
+\subsection{The Localization Mechanism}
+\label{sec:localization-mechanism}
+
+The localization mechanism is now clear:
+
+\begin{enumerate}
+	\item The **phase gradient** term $D_{\mathrm{eff}} \cA (\theta')^2$
+	is anti-restoring.
+	\item The **diffusion** term $-D_{\mathrm{eff}} \cA''$ is restoring
+	but has the same sign as the phase gradient after division by
+	$D_{\mathrm{eff}}$.
+	\item The **oscillatory driving** term provides an additional
+	restoring contribution.
+	\item The balance between the phase gradient, the diffusion, and
+	the oscillatory driving allows a localized solution.
+\end{enumerate}
+
+**The oscillation is the key.** Without it, the amplitude equation has
+no localized solution. With it, the equation admits a localized
+breather.
+
+\subsection{The Breather Frequency}
+\label{sec:breather-frequency}
+
+The breather frequency is determined by the oscillation of the
+orientation:
+\begin{equation}
+	\underbrace{\omega_{\mathrm{osc}}}_{\text{breather frequency}}
+	= \underbrace{\frac{\partial \theta}{\partial t}}_{\text{phase rate}}.
+	\label{eq:breather-frequency}
+\end{equation}
+
+For a traveling breather, the phase is a function of $\xi - ct$, so
+\begin{equation}
+	\underbrace{\omega_{\mathrm{osc}} = c \theta'}_{\text{breather frequency}}
+	= \underbrace{c \frac{M}{\hbar} v_\xi}_{\text{Madelung condition}}.
+	\label{eq:breather-frequency-explicit}
+\end{equation}
+
+With $v_\xi = c$ (Madelung condition):
+\begin{equation}
+	\underbrace{\omega_{\mathrm{osc}} = \frac{M c^2}{\hbar}}_{\text{breather frequency}}.
+	\label{eq:breather-frequency-final}
+\end{equation}
+
+**The breather frequency is proportional to the kinetic energy.**
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\part{The Helical Breathing Soliton}
+% ============================================================
+
+% ------------------------------------------------------------
+\section{The Helical Ansatz}
+\label{sec:helical}
+% ------------------------------------------------------------
+
+On the Madelung surface, the gyron dynamics reduces to the Madelung
+equations. In this part we construct a family of localized, oscillatory,
+helical solutions --- the \emph{helical breathing solitons} --- and
+solve the resulting equations numerically.
+
+\subsection{Helical Coordinates}
+\label{sec:helical-coordinates}
+
+We work in cylindrical coordinates $(r, \theta, z)$. The helical
+coordinate is
+\begin{equation}
+	\underbrace{\xi = z - l\theta}_{\text{helical coordinate}},
+	\label{eq:helical-coordinate}
+\end{equation}
+where $l$ is the \emph{helical pitch}. The helical coordinate is
+constant along helical streamlines.
+
+The derivatives with respect to $z$ and $\theta$ are related by
+\begin{equation}
+	\underbrace{\partial_z = \frac{1}{l}\partial_\theta =
+		\partial_\xi}_{\text{helical derivative}}.
+	\label{eq:helical-derivative}
+\end{equation}
+
+The helical ansatz assumes that all fields depend on $z$ and $\theta$
+only through the combination $\xi$.
+
+\subsection{The Velocity Field}
+\label{sec:velocity-field}
+
+The velocity field takes the form
+\begin{equation}
+	\underbrace{\mathbf{u} = u_r(r,\xi) \hat{r} + u_\theta(r,\xi)
+		\hat{\theta} + u_z(r,\xi) \hat{z}}_{\text{helical velocity}},
+	\label{eq:helical-velocity}
+\end{equation}
+with the helical constraint
+\begin{equation}
+	\underbrace{u_z = l u_\theta + w(r,\xi)}_{\text{helical constraint}},
+	\label{eq:helical-constraint}
+\end{equation}
+where $w$ is the axial velocity relative to the helical frame.
+
+The helical constraint ensures that the velocity field is tangent to
+the helical streamlines. It is the defining property of the helical
+ansatz.
+
+\subsection{The Spin Density}
+\label{sec:spin-density-helical}
+
+The spin density is assumed to be azimuthal:
+\begin{equation}
+	\underbrace{\boldsymbol{\mathcal{S}} = \mathcal{S}_\phi(r,\xi)
+		\hat{\phi}}_{\text{azimuthal spin}},
+	\label{eq:azimuthal-spin}
+\end{equation}
+with radial and axial components vanishing by symmetry.
+
+The azimuthal spin is the natural configuration for a helical vortex.
+The spin axis is perpendicular to the helical direction.
+
+\subsection{The Orientation Quaternion}
+\label{sec:orientation-helical}
+
+The orientation quaternion is assumed to be a phase rotation about the
+azimuthal axis:
+\begin{equation}
+	\underbrace{U(r,\xi,t) = U_0(r,\xi) e^{\omega_{\mathrm{osc}} t
+			\hat{n}}}_{\text{helical orientation}},
+	\label{eq:helical-orientation}
+\end{equation}
+where $U_0(r,\xi)$ is the slow (envelope) orientation,
+$\omega_{\mathrm{osc}}$ is the oscillation frequency, and $\hat{n}$ is
+the oscillation axis.
+
+For the helical breather, the oscillation axis is aligned with the
+azimuthal direction:
+\begin{equation}
+	\underbrace{\hat{n} = \hat{\phi}}_{\text{oscillation axis}}.
+	\label{eq:oscillation-axis}
+\end{equation}
+
+This ensures that the oscillation is consistent with the helical
+symmetry.
+
+\subsection{The Breather Ansatz}
+\label{sec:breather-ansatz}
+
+The full breather ansatz combines the helical symmetry with the
+oscillatory time dependence:
+\begin{align}
+	\underbrace{\cA(r,\xi,t) = \cA_0(r,\xi) + \delta \cA(r,\xi)
+		e^{i \omega_{\mathrm{osc}} t}}_{\text{oscillatory amplitude}}, \\
+	\underbrace{U(r,\xi,t) = U_0(r,\xi) e^{\omega_{\mathrm{osc}} t
+			\hat{\phi}}}_{\text{oscillatory orientation}}, \\
+	\underbrace{u_\xi(r,\xi) = u_0(r,\xi)}_{\text{steady velocity}}, \\
+	\underbrace{\omega_\phi(r,\xi) = \omega_0(r,\xi)}_{\text{steady vorticity}}.
+	\label{eq:breather-ansatz}
+\end{align}
+
+The amplitude and orientation oscillate, while the velocity and
+vorticity are steady.
+
+\subsection{The Radial Eigenfunction Expansion}
+\label{sec:radial-expansion}
+
+The radial dependence is expanded in Gaussian-Laguerre functions:
+\begin{equation}
+	\underbrace{\cA_0(r,\xi) = \sum_{n=0}^{N} A_n(\xi) \phi_n(r)}
+	_{\text{radial expansion}},
+	\label{eq:radial-expansion}
+\end{equation}
+where
+\begin{equation}
+	\underbrace{\phi_n(r) = e^{-r^2/(2R^2)} L_n(r^2/R^2)}
+	_{\text{Gaussian-Laguerre}},
+	\label{eq:gaussian-laguerre}
+\end{equation}
+$R$ is the radial width, and $L_n$ are Laguerre polynomials.
+
+The Gaussian-Laguerre functions are complete in the space of localized
+functions and provide a natural basis for the radial structure of the
+breather.
+
+\subsection{Properties of the Gaussian-Laguerre Functions}
+\label{sec:gaussian-laguerre-properties}
+
+The Gaussian-Laguerre functions have the following properties:
+
+\begin{enumerate}
+	\item \textbf{Localization:} $\phi_n(r) \to 0$ as $r \to \infty$.
+	
+	\item \textbf{Regularity:} $\partial_r \phi_n(0) = 0$.
+	
+	\item \textbf{Orthogonality:} with respect to the weight
+	$r e^{-r^2/R^2}$.
+	
+	\item \textbf{Completeness:} the set $\{\phi_n\}$ is complete in
+	$L^2(\mathbb{R}_+, r \, dr)$.
+\end{enumerate}
+
+The first few functions are
+\begin{align}
+	\underbrace{\phi_0(r) = e^{-r^2/(2R^2)}}_{\text{ground state}}, \\
+	\underbrace{\phi_1(r) = e^{-r^2/(2R^2)} \left( 1 -
+		\frac{r^2}{R^2} \right)}_{\text{first excited}}, \\
+	\underbrace{\phi_2(r) = e^{-r^2/(2R^2)} \left( 1 -
+		\frac{2r^2}{R^2} + \frac{r^4}{2R^4} \right)}_{\text{second excited}}.
+	\label{eq:first-functions}
+\end{align}
+
+The ground state $\phi_0$ is a Gaussian. The excited states have nodes.
+
+\subsection{The Matrix Elements}
+\label{sec:matrix-elements}
+
+The radial Laplacian acting on the Gaussian-Laguerre functions gives
+\begin{equation}
+	\underbrace{\mathcal{L}_r \phi_n = \frac{1}{r}\partial_r
+		(r \partial_r \phi_n)}_{\text{radial Laplacian}},
+	\label{eq:radial-laplacian}
+\end{equation}
+with matrix elements
+\begin{equation}
+	\underbrace{\mathcal{L}_{mn} = \int_0^\infty \phi_m \mathcal{L}_r
+		\phi_n \, r \, dr}_{\text{matrix elements}}.
+	\label{eq:matrix-elements}
+\end{equation}
+
+Using the properties of Laguerre polynomials, the matrix elements are
+\begin{equation}
+	\boxed{
+		\underbrace{\mathcal{L}_{mn} = -\frac{n+1}{2} \delta_{m,n+1}
+			- \frac{2n+1}{2} \delta_{mn} - \frac{n}{2} \delta_{m,n-1}}
+		_{\text{tridiagonal}}.
+	}
+	\label{eq:matrix-elements-explicit}
+\end{equation}
+
+This is the key result: the radial Laplacian is \textbf{tridiagonal} in
+the Gaussian-Laguerre basis. This makes the spectral equations
+tractable.
+
+\subsection{The Dimensionless Variables}
+\label{sec:dimensionless-variables}
+
+It is convenient to introduce dimensionless variables:
+\begin{equation}
+	\underbrace{x = \frac{\xi}{L}}_{\text{dimensionless helical coordinate}},
+	\label{eq:dimensionless-x}
+\end{equation}
+where $L$ is the packet length. All fields are then functions of
+$(r, x)$.
+
+\subsection{The Helical Symmetry}
+\label{sec:helical-symmetry}
+
+The helical ansatz has the following symmetries:
+
+\begin{enumerate}
+	\item \textbf{Translation:} the fields depend on $z$ and $\theta$
+	only through $\xi$, so they are invariant under simultaneous
+	translations in $z$ and $\theta$.
+	
+	\item \textbf{Reflection:} the fields are even in $\xi$ (for the
+	symmetric breather).
+	
+	\item \textbf{Azimuthal:} the fields depend on $\theta$ only
+	through $\xi$, so they are not invariant under azimuthal
+	rotations alone.
+\end{enumerate}
+
+The helical symmetry reduces the problem from three dimensions to two:
+the independent variables are $(r, \xi)$.
+
+\subsection{The Physical Picture}
+\label{sec:physical-picture}
+
+The helical breather is a localized, oscillatory structure that winds
+around a central axis. Its properties are:
+
+\begin{enumerate}
+	\item \textbf{Localization:} the amplitude decays exponentially in
+	$r$ and $\xi$.
+	
+	\item \textbf{Oscillation:} the amplitude and orientation oscillate
+	with frequency $\omega_{\mathrm{osc}}$.
+	
+	\item \textbf{Helicity:} the structure winds around the axis with
+	pitch $l$.
+	
+	\item \textbf{Azimuthal spin:} the spin density is azimuthal.
+\end{enumerate}
+
+The breather is a \textbf{bound state} of the spin-vorticity
+oscillation. The spin and vorticity oscillate around each other, and
+the amplitude is modulated by this oscillation.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{The Breathing Ansatz}
+\label{sec:breathing}
+% ------------------------------------------------------------
+
+The helical ansatz of Section~\ref{sec:helical} describes a steady
+helical structure. To obtain a localized breather, we add an
+oscillatory time dependence to the amplitude and orientation. In this
+section we derive the spectral equations for the breathing soliton.
+
+\subsection{The Oscillatory Amplitude}
+\label{sec:oscillatory-amplitude}
+
+The amplitude is decomposed into a slow envelope and a fast oscillation:
+\begin{equation}
+	\underbrace{\cA(r,\xi,t) = \cA_0(r,\xi) + \delta \cA(r,\xi)
+		e^{i \omega_{\mathrm{osc}} t}}_{\text{oscillatory amplitude}},
+	\label{eq:oscillatory-amplitude-later-2}
+\end{equation}
+where $\cA_0$ is the slow (envelope) amplitude, $\delta \cA$ is the
+oscillatory correction, and $\omega_{\mathrm{osc}}$ is the breathing
+frequency.
+
+For the helical breather, the amplitude is separable:
+\begin{equation}
+	\underbrace{\cA_0(r,\xi) = \sum_{n=0}^{N} A_n(\xi) \phi_n(r)}
+	_{\text{radial expansion}},
+	\label{eq:amplitude-expansion}
+\end{equation}
+where $\phi_n(r)$ are the Gaussian-Laguerre functions of
+Section~\ref{sec:radial-expansion}.
+
+The oscillatory correction $\delta \cA$ satisfies a similar expansion:
+\begin{equation}
+	\underbrace{\delta \cA(r,\xi) = \sum_{n=0}^{N} \delta A_n(\xi)
+		\phi_n(r)}_{\text{oscillatory expansion}}.
+	\label{eq:oscillatory-expansion}
+\end{equation}
+
+\subsection{The Oscillatory Orientation}
+\label{sec:oscillatory-orientation}
+
+The orientation quaternion is
+\begin{equation}
+	\underbrace{U(r,\xi,t) = U_0(r,\xi) e^{\omega_{\mathrm{osc}} t
+			\hat{\phi}}}_{\text{oscillatory orientation}},
+	\label{eq:oscillatory-orientation}
+\end{equation}
+where $U_0$ is the slow orientation and $\hat{\phi}$ is the azimuthal
+axis.
+
+The slow orientation is a phase rotation about the azimuthal axis:
+\begin{equation}
+	\underbrace{U_0(r,\xi) = e^{\theta_0(r,\xi) \hat{\phi}}}_{\text{slow orientation}},
+	\label{eq:slow-orientation}
+\end{equation}
+where $\theta_0(r,\xi)$ is the slow phase.
+
+The full orientation is therefore
+\begin{equation}
+	\underbrace{U(r,\xi,t) = e^{\theta_0(r,\xi) \hat{\phi}}
+		e^{\omega_{\mathrm{osc}} t \hat{\phi}}}_{\text{full orientation}}
+	= e^{(\theta_0(r,\xi) + \omega_{\mathrm{osc}} t) \hat{\phi}}.
+	\label{eq:full-orientation}
+\end{equation}
+
+The orientation is a pure phase rotation about the azimuthal axis, with
+a phase that is the sum of the slow spatial part and the fast temporal
+part.
+
+\subsection{The Spin Phase Gradient}
+\label{sec:spin-phase-gradient-breathing}
+
+The spin phase gradient is
+\begin{equation}
+	\underbrace{v_i = \mathrm{Im}(\bar{U} \partial_i U)}_{\text{spin phase gradient}}.
+	\label{eq:spin-phase-gradient-later-2}
+\end{equation}
+With the orientation \eqref{eq:full-orientation}:
+\begin{equation}
+	\underbrace{\bar{U} \partial_i U = \partial_i \theta_0 \hat{\phi}
+		+ (\theta_0 + \omega_{\mathrm{osc}} t) \partial_i \hat{\phi}}
+	_{\text{Maurer-Cartan form}}.
+	\label{eq:maurer-cartan-breathing}
+\end{equation}
+Since $\hat{\phi}$ is independent of $r$ and $\xi$ (it depends only on
+$\theta$), and $\partial_\theta \hat{\phi} = -\hat{r}$, we have
+\begin{equation}
+	\underbrace{\partial_i \hat{\phi} = -\hat{r} \delta_{i\theta}}
+	_{\text{azimuthal derivative}}.
+	\label{eq:azimuthal-derivative}
+\end{equation}
+
+The spin phase gradient is therefore
+\begin{equation}
+	\underbrace{v_i = \partial_i \theta_0 \hat{\phi} \cdot \hat{\phi}
+		- (\theta_0 + \omega_{\mathrm{osc}} t) \delta_{i\theta}
+		\hat{r} \cdot \hat{\phi}}_{\text{spin phase gradient}}.
+	\label{eq:spin-phase-gradient-explicit}
+\end{equation}
+Taking the imaginary part and projecting onto the helical direction:
+\begin{equation}
+	\underbrace{v_\xi = \partial_\xi \theta_0}_{\text{helical phase gradient}}.
+	\label{eq:helical-phase-gradient}
+\end{equation}
+
+The azimuthal part vanishes because $\hat{r} \cdot \hat{\phi} = 0$.
+
+\subsection{The Madelung Velocity}
+\label{sec:madelung-velocity-breathing}
+
+The Madelung velocity is
+\begin{equation}
+	\underbrace{\mathbf{v}_{\mathrm{Madelung}} = \frac{\hbar}{M}
+		\mathrm{Im}(\bar{U} \nabla U)}_{\text{Madelung velocity}}.
+	\label{eq:madelung-velocity-later-2}
+\end{equation}
+With the spin phase gradient \eqref{eq:helical-phase-gradient}:
+\begin{equation}
+	\underbrace{\mathbf{v}_{\mathrm{Madelung}} = \frac{\hbar}{M}
+		\partial_\xi \theta_0 \hat{\xi}}_{\text{helical Madelung velocity}}.
+	\label{eq:helical-madelung-velocity}
+\end{equation}
+
+The Madelung velocity is along the helical direction.
+
+\subsection{The Dimensionless Spectral Equations}
+\label{sec:spectral-equations}
+
+Substituting the breathing ansatz into the amplitude equation
+\eqref{eq:amplitude-equation-explicit} and projecting onto the
+Gaussian-Laguerre mode $\phi_m$, we obtain the spectral equations:
+\begin{equation}
+	\boxed{
+		\underbrace{(u_\xi - c) \partial_x A_m}_{\text{advection}}
+		= \underbrace{\alpha \left( m A_{m-1} + (2m+1) A_m
+			+ (m+1) A_{m+1} \right)}_{\text{radial diffusion}}
+		\underbrace{- \beta A_m}_{\text{relaxation}}
+		+ \underbrace{\gamma \, \mathrm{sech}(x) \delta_{m0}}_{\text{driving}},
+	}
+	\label{eq:spectral-equations}
+\end{equation}
+where the dimensionless parameters are
+\begin{align}
+	\underbrace{\tilde{u} = \frac{u_\xi - c}{c_{\mathrm{vortex}}}}
+	_{\text{dimensionless advection}}, \\
+	\underbrace{\alpha = \frac{L D_s}{2 c_{\mathrm{vortex}}}}
+	_{\text{dimensionless diffusion}}, \\
+	\underbrace{\beta = \frac{L}{\tau_s c_{\mathrm{vortex}}}}
+	_{\text{dimensionless relaxation}}, \\
+	\underbrace{\gamma = \frac{L \mathcal{F}_0}{c_{\mathrm{vortex}}}}
+	_{\text{dimensionless driving}}.
+	\label{eq:dimensionless-parameters}
+\end{align}
+
+This is the core system of spectral ODEs. It determines the helical
+profile of the breather.
+
+\subsection{The Structure of the Spectral Equations}
+\label{sec:spectral-structure}
+
+The spectral equations have the following structure:
+
+\begin{enumerate}
+	\item \textbf{Advection:} the left-hand side is the advection of
+	the mode amplitude by the helical velocity.
+	
+	\item \textbf{Radial diffusion:} the first term on the right-hand
+	side couples each mode to its neighbors. The coupling is
+	tridiagonal.
+	
+	\item \textbf{Relaxation:} the second term is the relaxation of
+	each mode to zero.
+	
+	\item \textbf{Driving:} the third term is the driving of the
+	$m = 0$ mode by the sech profile.
+\end{enumerate}
+
+The equations are \textbf{linear} in the mode amplitudes and
+\textbf{coupled} through the tridiagonal diffusion term.
+
+\subsection{The Boundary Conditions}
+\label{sec:boundary-conditions}
+
+For a localized breather, the mode amplitudes must vanish at the
+boundaries:
+\begin{equation}
+	\underbrace{A_m(\pm \infty) = 0}_{\text{localization}}.
+	\label{eq:boundary-conditions}
+\end{equation}
+
+The boundary conditions ensure that the breather is localized in the
+helical coordinate.
+
+\subsection{The Dimensionless Parameters}
+\label{sec:dimensionless-parameters-values}
+
+For the illustrative physical parameter choice:
+
+\begin{align}
+	\underbrace{\tilde{u} = 1.67 \times 10^{-2}}_{\text{advection}}, \\
+	\underbrace{\alpha = 9.65 \times 10^{-27}}_{\text{diffusion}}, \\
+	\underbrace{\beta = 3.33 \times 10^{-1}}_{\text{relaxation}}, \\
+	\underbrace{\gamma = 3.33 \times 10^{-2}}_{\text{driving}}.
+	\label{eq:dimensionless-values}
+\end{align}
+
+\textbf{The diffusion parameter $\alpha$ is negligibly small.} This
+means the radial diffusion term is negligible, and the modes decouple.
+
+\subsection{The Decoupled Limit}
+\label{sec:decoupled-limit}
+
+In the limit $\alpha \to 0$, the spectral equations decouple:
+\begin{align}
+	\underbrace{\tilde{u} \partial_x A_0 = -\beta A_0 + \gamma
+		\mathrm{sech}(x)}_{\text{driven mode}}, \\
+	\underbrace{\tilde{u} \partial_x A_m = -\beta A_m}_{\text{decaying modes}},
+	\quad m \geq 1.
+	\label{eq:decoupled}
+\end{align}
+
+The $m = 0$ mode satisfies a driven equation, while the $m \geq 1$
+modes satisfy homogeneous decay equations.
+
+\subsection{The Analytic Solution for the Driven Mode}
+\label{sec:analytic-solution}
+
+The $m = 0$ equation is
+\begin{equation}
+	\underbrace{\tilde{u} \partial_x A_0 = -\beta A_0 + \gamma
+		\mathrm{sech}(x)}_{\text{driven equation}}.
+	\label{eq:driven-equation}
+\end{equation}
+
+This is a first-order linear ODE. The solution is
+\begin{equation}
+	\boxed{
+		\underbrace{A_0(x) = \frac{\gamma}{\tilde{u}} \int_{-\infty}^{x}
+			e^{-\beta(x - x')/\tilde{u}} \mathrm{sech}(x') \, dx'}
+		_{\text{convolution integral}}.
+	}
+	\label{eq:analytic-solution}
+\end{equation}
+
+This is a convolution of the sech driving with an exponential kernel.
+
+\subsection{The Localization Condition}
+\label{sec:localization-condition}
+
+For the solution \eqref{eq:analytic-solution} to be localized, we need
+\begin{equation}
+	\underbrace{\frac{\beta}{\tilde{u}} > 0}_{\text{localization}}.
+	\label{eq:localization-condition}
+\end{equation}
+
+Since $\beta > 0$, this requires
+\begin{equation}
+	\underbrace{\tilde{u} > 0}_{\text{positive advection}},
+	\label{eq:positive-advection}
+\end{equation}
+or equivalently
+\begin{equation}
+	\underbrace{u_\xi - c > 0}_{\text{breather speed}}.
+	\label{eq:breather-speed-condition}
+\end{equation}
+
+\textbf{The breather speed must be less than the helical velocity.}
+
+\subsection{The Mode Structure}
+\label{sec:mode-structure}
+
+The mode structure is:
+
+\begin{enumerate}
+	\item \textbf{Mode 0:} the dominant mode, driven by the sech term,
+	localized with a sech-like profile.
+	
+	\item \textbf{Modes 1, 2, ...:} exponentially small, because the
+	diffusion parameter $\alpha$ is negligibly small.
+\end{enumerate}
+
+\textbf{The breather is a single-mode solution.} The higher modes are
+suppressed by $\alpha \sim 10^{-26}$.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Numerical Solution}
+\label{sec:numerical}
+% ------------------------------------------------------------
+
+The spectral equations \eqref{eq:spectral-equations} are a coupled
+system of linear ODEs for the mode amplitudes $A_m(x)$. In this section
+we solve them numerically and characterize the breather solution.
+
+\subsection{The Dimensionless Parameters}
+\label{sec:dimensionless-parameters}
+
+The dimensionless parameters are defined by
+\begin{align}
+	\underbrace{\tilde{u} = \frac{u_\xi - c}{c_{\mathrm{vortex}}}}
+	_{\text{dimensionless advection}}, \\
+	\underbrace{\alpha = \frac{L D_s}{2 c_{\mathrm{vortex}}}}
+	_{\text{dimensionless diffusion}}, \\
+	\underbrace{\beta = \frac{L}{\tau_s c_{\mathrm{vortex}}}}
+	_{\text{dimensionless relaxation}}, \\
+	\underbrace{\gamma = \frac{L \mathcal{F}_0}{c_{\mathrm{vortex}}}}
+	_{\text{dimensionless driving}}.
+	\label{eq:dimensionless-parameters-later-2}
+\end{align}
+
+For the illustrative physical parameter choice:
+
+\begin{align}
+	\underbrace{\tilde{u} = 1.67 \times 10^{-2}}_{\text{advection}}, \\
+	\underbrace{\alpha = 9.65 \times 10^{-27}}_{\text{diffusion}}, \\
+	\underbrace{\beta = 3.33 \times 10^{-1}}_{\text{relaxation}}, \\
+	\underbrace{\gamma = 3.33 \times 10^{-2}}_{\text{driving}}.
+	\label{eq:dimensionless-values-later-2}
+\end{align}
+
+The diffusion parameter $\alpha$ is negligibly small. This means the
+radial diffusion term is negligible, and the modes decouple.
+
+\subsection{The Sparse Linear System}
+\label{sec:sparse-system}
+
+The spectral equations \eqref{eq:spectral-equations} are discretized on
+a uniform grid in $x$ with central differences:
+\begin{equation}
+	\underbrace{\partial_x A_m \approx \frac{A_{m,j+1} -
+			A_{m,j-1}}{2 \Delta x}}_{\text{central difference}},
+	\label{eq:central-difference}
+\end{equation}
+where $j$ indexes the grid points.
+
+The resulting linear system is
+\begin{equation}
+	\underbrace{\mathbf{M} \mathbf{A} = \mathbf{F}}_{\text{linear system}},
+	\label{eq:linear-system}
+\end{equation}
+where $\mathbf{M}$ is a sparse block-tridiagonal matrix, $\mathbf{A}$
+is the vector of mode amplitudes, and $\mathbf{F}$ is the driving
+vector.
+
+The matrix $\mathbf{M}$ has the following structure:
+\begin{enumerate}
+	\item \textbf{Block-tridiagonal:} each block corresponds to a
+	grid point, and the blocks are coupled through the advection and
+	diffusion terms.
+	
+	\item \textbf{Sparse:} the number of non-zero entries is
+	$\mathcal{O}(N \cdot J)$, where $N$ is the number of modes and
+	$J$ is the number of grid points.
+	
+	\item \textbf{Non-singular:} the boundary conditions ensure that
+	$\mathbf{M}$ is invertible.
+\end{enumerate}
+
+The linear system is solved using a sparse linear solver.
+% ------------------------------------------------------------
+% Repeated numerical setup consolidated into the preceding section.
+
+\subsection{Numerical Results}
+\label{sec:numerical-results}
+
+The numerical solution of the spectral equations is shown in
+Figure~\ref{fig:breather}. The four panels display:
+
+\begin{enumerate}
+	\item \textbf{Mode profiles} (top left): the amplitudes
+	$A_m(x)$ for $m = 0, 1, 2, 3$. The $m = 0$ mode dominates,
+	confirming the single-mode structure. The higher modes are
+	suppressed by the small diffusion parameter $\alpha \sim
+	10^{-26}$.
+	
+	\item \textbf{Radial amplitude} (top right): the amplitude
+	$\cA_0(r, 0)$ at $\xi = 0$ as a function of $r/R$. The profile
+	is Gaussian, consistent with the ground-state
+	Gaussian-Laguerre function.
+	
+	\item \textbf{Associated fields} (bottom left): the normalized
+	phase gradient $\theta'(\xi)$ and the vorticity
+	$\omega_\phi(\xi)$. Both have the sech-like profile of the
+	driven mode.
+	
+	\item \textbf{Two-dimensional amplitude} (bottom right): the
+	full amplitude $|\cA_0(r, \xi)|$ in the $(r, \xi)$ plane. The
+	breather is localized in both directions.
+\end{enumerate}
+
+\begin{figure}[htbp]
+	\centering
+	\manuscriptfigure{helical_breather.png}{1.0}
+	\caption{Numerical solution of the spectral equations for the
+		helical breathing soliton. Top left: mode profiles $A_m(x)$.
+		Top right: radial amplitude $\cA_0(r, 0)$. Bottom left:
+		associated fields $\theta'(\xi)$ and $\omega_\phi(\xi)$.
+		Bottom right: two-dimensional amplitude
+		$|\cA_0(r, \xi)|$.}
+	\label{fig:breather}
+\end{figure}
+
+\subsection{The Physical Amplitude}
+\label{sec:physical-amplitude}
+
+The physical amplitude is reconstructed from the mode amplitudes:
+\begin{equation}
+	\underbrace{\cA_0(r,\xi) = \sum_{n=0}^{N} A_n(\xi)
+		\phi_n(r)}_{\text{physical amplitude}},
+	\label{eq:physical-amplitude}
+\end{equation}
+where $\phi_n(r)$ are the Gaussian-Laguerre functions.
+
+The peak amplitude is
+\begin{equation}
+	\underbrace{\cA_0(0, 0) = 9.98 \times 10^{-2}}_{\text{peak amplitude}}.
+	\label{eq:peak-amplitude}
+\end{equation}
+
+The amplitude is localized in both $r$ and $\xi$, with a Gaussian
+radial profile and a sech-like helical profile.
+
+\subsection{Parameter Sweep and Mass Spectrum}
+\label{sec:parameter-sweep}
+
+We perform a parameter sweep over the driving parameter $\gamma$ and
+the density scale $\rho$. The mass is computed from the corrected
+volume element:
+\begin{equation}
+	\underbrace{M_{\mathrm{eff}} = \frac{2\pi L}{c_{\mathrm{vortex}}^2}
+		\int_0^\infty \int_{-\infty}^\infty \rho |\cA_0(r,x)|^2
+		\, r \, dr \, dx}_{\text{effective mass}}.
+	\label{eq:effective-mass}
+\end{equation}
+
+The mass scales as
+\begin{equation}
+	\underbrace{M_{\mathrm{eff}} \propto \gamma^2 \rho}_{\text{mass scaling}}.
+	\label{eq:mass-scaling}
+\end{equation}
+
+Figure~\ref{fig:mass-spectrum} shows the mass spectrum and parameter
+sweep. The mass depends on the driving parameter $\gamma$ and the
+density scale $\rho$. The mass crosses the electron mass $m_e$ at a
+specific combination of parameters.
+
+\begin{figure}[htbp]
+	\centering
+	\manuscriptfigure{helical_breather_complete.png}{0.85}
+	\caption{Mass spectrum and parameter sweep of the helical breather.
+		The figure shows the dependence of the effective mass on the
+		driving parameter $\gamma$ and the density scale $\rho$.}
+	\label{fig:mass-spectrum}
+\end{figure}
+
+\subsection{The Mode Structure}
+\label{sec:mode-structure-later-2}
+
+The mode structure is characterized by:
+
+\begin{enumerate}
+	\item \textbf{Single-mode dominance:} the $m = 0$ mode carries
+	essentially all of the amplitude. The higher modes are
+	suppressed by $\alpha \sim 10^{-26}$.
+	
+	\item \textbf{Localization:} the mode amplitudes decay to zero
+	at the boundaries, confirming the localized nature of the
+	breather.
+	
+	\item \textbf{sech-like profile:} the $m = 0$ mode has a
+	sech-like profile, consistent with the analytic solution
+	\eqref{eq:analytic-solution}.
+\end{enumerate}
+
+\subsection{The Source-Sink Structure}
+\label{sec:source-sink}
+
+The breather has a source-sink structure in the helical coordinate.
+The velocity field has a source region where the flow diverges and a
+sink region where it converges. This structure is responsible for the
+localization of the breather in the helical direction.
+
+The source-sink structure is visible in the bottom-left panel of
+Figure~\ref{fig:breather}, where the phase gradient $\theta'(\xi)$
+changes sign across the core.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{The Breather Family}
+\label{sec:family}
+% ------------------------------------------------------------
+
+The numerical solution of Section~\ref{sec:numerical} yields a
+one-parameter family of localized breather solutions. In this section
+we characterize the family, identify its free parameters, and compute
+its physical properties.
+
+\subsection{The Four Free Parameters}
+\label{sec:free-parameters}
+
+The breather family is parameterized by four quantities:
+
+\begin{enumerate}
+	\item \textbf{Amplitude scale $A_0$:} the overall scale of the
+	amplitude. Determined by the driving strength $\gamma$.
+	
+	\item \textbf{Radial width $R$:} the characteristic radius of the
+	Gaussian radial profile. Determined by the balance of diffusion
+	and relaxation.
+	
+	\item \textbf{Oscillation frequency $\omega_{\mathrm{osc}}$:} the
+	frequency of the breathing oscillation. Determined by the
+	breather condition.
+	
+	\item \textbf{Breather speed $c$:} the speed at which the
+	breather translates. A free parameter, subject to the
+	localization condition.
+\end{enumerate}
+
+The four parameters define a four-dimensional family of breathers.
+
+\subsection{The Amplitude Scale}
+\label{sec:amplitude-scale}
+
+The amplitude scale $A_0$ is determined by the dimensionless driving
+parameter $\gamma$:
+\begin{equation}
+	\underbrace{A_0 \propto \gamma}_{\text{amplitude scaling}}.
+	\label{eq:amplitude-scaling}
+\end{equation}
+
+From the numerical solution:
+\begin{equation}
+	\underbrace{A_0 = 9.98 \times 10^{-2}}_{\text{peak amplitude}}
+	\quad \text{for} \quad
+	\underbrace{\gamma = 3.33 \times 10^{-2}}_{\text{base driving}}.
+	\label{eq:amplitude-value}
+\end{equation}
+
+The amplitude scale determines the peak amplitude of the breather, and
+hence its mass.
+
+\subsection{The Radial Width}
+\label{sec:radial-width}
+
+The radial width $R$ is determined by the balance of the radial
+diffusion and the relaxation:
+\begin{equation}
+	\underbrace{R \sim \sqrt{2 D_s \tau_s}}_{\text{radial width}}.
+	\label{eq:radial-width}
+\end{equation}
+
+With $D_s \sim 10^{-5}$ m$^2$/s and $\tau_s \sim 10^{-21}$ s:
+\begin{equation}
+	\underbrace{R \sim 1.4 \times 10^{-13} \, \text{m}}_{\text{Compton scale}}.
+	\label{eq:radial-width-value}
+\end{equation}
+
+This is the Compton wavelength of the electron. The radial width is
+fixed by the calibration to the electron mass.
+
+\subsection{The Oscillation Frequency}
+\label{sec:oscillation-frequency}
+
+The oscillation frequency $\omega_{\mathrm{osc}}$ is determined by the
+breather condition
+\begin{equation}
+	\underbrace{\omega_{\mathrm{osc}} = c \theta'}_{\text{breather condition}}
+	= \underbrace{c \frac{M}{\hbar} v_\xi}_{\text{Madelung condition}}.
+	\label{eq:oscillation-frequency}
+\end{equation}
+
+With $v_\xi = c$ (Madelung condition):
+\begin{equation}
+	\underbrace{\omega_{\mathrm{osc}} = \frac{M c^2}{\hbar}}_{\text{oscillation frequency}}.
+	\label{eq:oscillation-frequency-final}
+\end{equation}
+
+The oscillation frequency is proportional to the kinetic energy of the
+breather.
+
+\subsection{The Breather Speed}
+\label{sec:breather-speed}
+
+The breather speed $c$ is a free parameter. It is subject to the
+localization condition
+\begin{equation}
+	\underbrace{u_\xi - c > 0}_{\text{localization}}.
+	\label{eq:localization-condition-later-2}
+\end{equation}
+
+Since $u_\xi$ is the helical velocity, the breather speed must be less
+than the helical velocity for the breather to be localized.
+
+The breather speed determines the de Broglie wavelength:
+\begin{equation}
+	\underbrace{\lambda_{\mathrm{dB}} = \frac{h}{M c}}_{\text{de Broglie wavelength}}.
+	\label{eq:de-broglie}
+\end{equation}
+
+\subsection{The Mode Structure}
+\label{sec:family-mode-structure}
+
+The mode structure is characterized by:
+
+\begin{enumerate}
+	\item \textbf{$m = 0$ dominance:} the $m = 0$ mode carries
+	essentially all of the amplitude. The higher modes are
+	suppressed by the small diffusion parameter.
+	
+	\item \textbf{sech-like profile:} the $m = 0$ mode has a
+	sech-like profile in the helical coordinate.
+	
+	\item \textbf{Gaussian radial profile:} the radial profile is
+	Gaussian, consistent with the ground-state Gaussian-Laguerre
+	function.
+\end{enumerate}
+
+The mode structure is determined by the linear spectral equations and
+is independent of the detailed nonlinear dynamics.
+
+\subsection{The Amplitude Profile}
+\label{sec:amplitude-profile}
+
+The amplitude profile is
+\begin{equation}
+	\underbrace{\cA_0(r,\xi) = A_0 e^{-r^2/(2R^2)}
+		\mathrm{sech}(\xi/L)}_{\text{amplitude profile}},
+	\label{eq:amplitude-profile}
+\end{equation}
+where $A_0$ is the peak amplitude, $R$ is the radial width, and $L$ is
+the packet length.
+
+The profile is the product of a Gaussian in $r$ and a sech in $\xi$.
+This is the natural profile for a localized breather on the helical
+background.
+
+\subsection{The Associated Fields}
+\label{sec:associated-fields}
+
+The other fields are determined by the amplitude and the closure
+conditions:
+
+\subsubsection{Density Deviation}
+
+\begin{equation}
+	\underbrace{\delta \rho(r,\xi) = \rho_{\mathrm{scale}}
+		\cA_0(r,\xi)}_{\text{density deviation}}.
+	\label{eq:density-deviation}
+\end{equation}
+
+\subsubsection{Spin Density}
+
+\begin{equation}
+	\underbrace{\mathcal{S}(r,\xi,t) = \cA_{\mathrm{scale}}
+		\cA_0(r,\xi) \cos(\omega_{\mathrm{osc}} t) \hat{\phi}}
+	_{\text{spin density}}.
+	\label{eq:spin-density-family}
+\end{equation}
+
+\subsubsection{Vorticity}
+
+\begin{equation}
+	\underbrace{\omega_\phi(r,\xi) = \frac{\cA_{\mathrm{scale}}}
+		{\rho \chi_\rho} \cA_0(r,\xi)}_{\text{vorticity}}.
+	\label{eq:vorticity-family}
+\end{equation}
+
+\subsubsection{Velocity}
+
+\begin{equation}
+	\underbrace{u_\xi(r,\xi) = \frac{\hbar}{M} \theta'(r,\xi)}
+	_{\text{velocity}},
+	\label{eq:velocity-family}
+\end{equation}
+with $\theta'$ determined by the Madelung condition.
+
+\subsubsection{Pressure}
+
+\begin{equation}
+	\underbrace{P(r,\xi) = c_s^2 \rho_{\mathrm{scale}}
+		\cA_0(r,\xi)}_{\text{pressure}}.
+	\label{eq:pressure-family}
+\end{equation}
+
+\subsubsection{Spin Pressure}
+
+\begin{equation}
+	\underbrace{\Pi^{(s)}(r,\xi) = \frac{\rho_{\mathrm{scale}}^3
+			\cA_0^3}{\rho^2 \chi_\rho}}_{\text{spin pressure}}.
+	\label{eq:spin-pressure-family}
+\end{equation}
+
+The spin pressure decays as $\cA_0^3$, which is much faster than the
+amplitude.
+
+\subsection{The Far-Field Structure}
+\label{sec:family-far-field}
+
+In the far field ($r \gg R$ or $|\xi| \gg L$), the dominant fields are:
+
+\begin{enumerate}
+	\item \textbf{Density:} $\delta \rho \sim e^{-r^2/(2R^2)}
+	e^{-|\xi|/L}$.
+	
+	\item \textbf{Spin density:} $\mathcal{S} \sim e^{-r^2/(2R^2)}
+	e^{-|\xi|/L}$.
+	
+	\item \textbf{Vorticity:} $\omega_\phi \sim e^{-r^2/(2R^2)}
+	e^{-|\xi|/L}$.
+	
+	\item \textbf{Energy density:} $\delta e_{\mathrm{tot}} \sim
+	e^{-r^2/(2R^2)} e^{-|\xi|/L}$.
+\end{enumerate}
+
+The spin pressure and other fields decay faster and are negligible in
+the far field.
+
+\subsection{The Multipole Moments}
+\label{sec:family-multipoles}
+
+The multipole moments are determined by the amplitude profile:
+
+\subsubsection{Mass (Monopole)}
+
+\begin{equation}
+	\underbrace{M = 2\pi^2 \rho_{\mathrm{scale}} A_0 R^2 L}
+	_{\text{mass}}.
+	\label{eq:mass-family}
+\end{equation}
+
+\subsubsection{Charge (Monopole)}
+
+\begin{equation}
+	\underbrace{Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+			\chi_\rho} \frac{\pi^2}{3} A_0^3 R^2 L}_{\text{charge}}.
+	\label{eq:charge-family}
+\end{equation}
+
+\subsubsection{Magnetic Moment (Dipole)}
+
+\begin{equation}
+	\underbrace{\mathbf{m} = \cA_{\mathrm{scale}} \cdot 2\pi^2 A_0
+		R^2 L \cos(\omega_{\mathrm{osc}} t) \hat{\phi}}
+	_{\text{magnetic moment}}.
+	\label{eq:magnetic-family}
+\end{equation}
+
+The magnetic moment oscillates with the breathing frequency.
+
+\subsection{The Mass Scaling}
+\label{sec:mass-scaling}
+
+The mass scales as
+\begin{equation}
+	\underbrace{M \propto \gamma^2 \rho}_{\text{mass scaling}}.
+	\label{eq:mass-scaling-family}
+\end{equation}
+
+This is the product of the amplitude squared (proportional to
+$\gamma^2$) and the density scale. The mass is the dominant observable
+of the breather family.
+
+\subsection{The Parameter Space}
+\label{sec:parameter-space}
+
+The breather family lives in a four-dimensional parameter space:
+\begin{equation}
+	\underbrace{(A_0, R, \omega_{\mathrm{osc}}, c) \in \mathbb{R}^4}
+	_{\text{parameter space}}.
+	\label{eq:parameter-space}
+\end{equation}
+
+Each point in this space corresponds to a distinct breather solution
+with a distinct mass, size, oscillation frequency, and speed.
+
+\subsection{The Physical Interpretation}
+\label{sec:family-interpretation}
+
+The breather family is a continuum of localized, oscillatory, helical
+solutions of the Madelung equations. Each member of the family is a
+distinct physical object with:
+
+\begin{enumerate}
+	\item A distinct mass (determined by $A_0$ and $\rho$).
+	\item A distinct size (determined by $R$).
+	\item A distinct oscillation frequency (determined by
+	$\omega_{\mathrm{osc}}$).
+	\item A distinct speed (determined by $c$).
+\end{enumerate}
+
+The family is the natural generalization of the static soliton to the
+oscillatory case.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\part{Far-Field Structure}
+% ============================================================
+
+% ------------------------------------------------------------
+\section{Multipole Moments}
+\label{sec:farfield}
+% ------------------------------------------------------------
+
+The far-field structure of the breather is determined by its multipole
+moments. In this section we compute the electric monopole, the magnetic
+dipole, the gravitational monopole, and the gravitational quadrupole
+from the breather solution.
+
+\subsection{The Density Deviation}
+\label{sec:density-deviation-farfield}
+
+The density deviation is the source of the gravitational field:
+\begin{equation}
+	\underbrace{\delta \rho(r,\xi) = \rho_{\mathrm{scale}}
+		\cA_0(r,\xi)}_{\text{density deviation}},
+	\label{eq:density-deviation-later-2}
+\end{equation}
+where $\cA_0$ is the amplitude profile
+\eqref{eq:amplitude-profile}.
+
+With the amplitude profile:
+\begin{equation}
+	\underbrace{\delta \rho(r,\xi) = \rho_{\mathrm{scale}} A_0
+		e^{-r^2/(2R^2)} \mathrm{sech}(\xi/L)}_{\text{density profile}}.
+	\label{eq:density-profile}
+\end{equation}
+
+The density is localized in both $r$ and $\xi$.
+
+\subsection{The Electric Monopole}
+\label{sec:electric-monopole}
+
+The electric charge is the integral of the spin pressure deviation:
+\begin{equation}
+	\underbrace{Q = \alpha_q \int \delta \Pi^{(s)} \, d^3x}
+	_{\text{electric charge}},
+	\label{eq:electric-charge}
+\end{equation}
+where $\alpha_q$ is the charge coupling and $\delta \Pi^{(s)}$ is the
+spin pressure deviation.
+
+From the spin pressure \eqref{eq:spin-pressure-family}:
+\begin{equation}
+	\underbrace{\delta \Pi^{(s)} = \frac{\rho_{\mathrm{scale}}^3
+			\cA_0^3}{\rho^2 \chi_\rho}}_{\text{spin pressure}}.
+	\label{eq:spin-pressure}
+\end{equation}
+
+The charge integral becomes
+\begin{equation}
+	\underbrace{Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+			\chi_\rho} \int \cA_0^3 \, d^3x}_{\text{charge integral}}.
+	\label{eq:charge-integral}
+\end{equation}
+
+The volume element in helical coordinates is
+\begin{equation}
+	\underbrace{d^3x = 2\pi L \, r \, dr \, dx}_{\text{volume element}},
+	\label{eq:volume-element}
+\end{equation}
+where $x = \xi/L$.
+
+The integral evaluates to
+\begin{equation}
+	\underbrace{\int \cA_0^3 \, d^3x = \frac{\pi^2}{3} A_0^3 R^2 L}
+	_{\text{charge integral}}.
+	\label{eq:charge-integral-value}
+\end{equation}
+
+The electric charge is
+\begin{equation}
+	\boxed{
+		\underbrace{Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+				\chi_\rho} \frac{\pi^2}{3} A_0^3 R^2 L}_{\text{electric monopole}}.
+	}
+	\label{eq:electric-monopole}
+\end{equation}
+
+This is the electric monopole moment. It is determined by the
+amplitude scale, the density scale, and the charge coupling.
+
+\subsection{The Magnetic Dipole}
+\label{sec:magnetic-dipole}
+
+The magnetic moment is the integral of the spin density:
+\begin{equation}
+	\underbrace{\mathbf{m} = \int \mathcal{S} \, d^3x}
+	_{\text{magnetic moment}}.
+	\label{eq:magnetic-moment}
+\end{equation}
+
+From the spin density \eqref{eq:spin-density-family}:
+\begin{equation}
+	\underbrace{\mathcal{S}(r,\xi,t) = \cA_{\mathrm{scale}}
+		\cA_0(r,\xi) \cos(\omega_{\mathrm{osc}} t) \hat{\phi}}
+	_{\text{spin density}}.
+	\label{eq:spin-density-later-2}
+\end{equation}
+
+The magnetic moment becomes
+\begin{equation}
+	\underbrace{\mathbf{m} = \cA_{\mathrm{scale}} \cos(\omega_{\mathrm{osc}} t)
+		\int \cA_0 \, d^3x \, \hat{\phi}}_{\text{magnetic integral}}.
+	\label{eq:magnetic-integral}
+\end{equation}
+
+The integral evaluates to
+\begin{equation}
+	\underbrace{\int \cA_0 \, d^3x = 2\pi^2 A_0 R^2 L}
+	_{\text{magnetic integral}}.
+	\label{eq:magnetic-integral-value}
+\end{equation}
+
+The magnetic moment is
+\begin{equation}
+	\boxed{
+		\underbrace{\mathbf{m} = 2\pi^2 \cA_{\mathrm{scale}} A_0
+			R^2 L \cos(\omega_{\mathrm{osc}} t) \hat{\phi}}
+		_{\text{magnetic dipole}}.
+	}
+	\label{eq:magnetic-dipole}
+\end{equation}
+
+The magnetic moment oscillates with the breathing frequency. This is a
+prediction of the model: the magnetic dipole of the breather is
+time-dependent.
+
+\subsection{The Gravitational Monopole}
+\label{sec:gravitational-monopole}
+
+The gravitational mass is the integral of the total energy density:
+\begin{equation}
+	\underbrace{M = \frac{1}{c_{\mathrm{vortex}}^2} \int
+		\delta e_{\mathrm{tot}} \, d^3x}_{\text{gravitational mass}}.
+	\label{eq:gravitational-mass}
+\end{equation}
+
+The energy density is dominated by the rest mass:
+\begin{equation}
+	\underbrace{\delta e_{\mathrm{tot}} \approx \delta \rho
+		c_{\mathrm{vortex}}^2}_{\text{rest mass}}.
+	\label{eq:rest-mass}
+\end{equation}
+
+The mass integral becomes
+\begin{equation}
+	\underbrace{M = \rho_{\mathrm{scale}} \int \cA_0 \, d^3x}
+	_{\text{mass integral}}.
+	\label{eq:mass-integral}
+\end{equation}
+
+Using the same integral as before:
+\begin{equation}
+	\boxed{
+		\underbrace{M = 2\pi^2 \rho_{\mathrm{scale}} A_0 R^2 L}
+		_{\text{gravitational monopole}}.
+	}
+	\label{eq:gravitational-monopole}
+\end{equation}
+
+This is the gravitational monopole moment. It is determined by the
+amplitude scale and the density scale.
+
+\subsection{The Gravitational Quadrupole}
+\label{sec:gravitational-quadrupole}
+
+The gravitational quadrupole moment is
+\begin{equation}
+	\underbrace{Q_{ij} = \int (3 x_i x_j - r^2 \delta_{ij})
+		\delta \rho \, d^3x}_{\text{quadrupole moment}}.
+	\label{eq:quadrupole}
+\end{equation}
+
+For the breather, the density is elongated along the helical direction.
+The dominant quadrupole component is
+\begin{equation}
+	\underbrace{Q_{\xi\xi} = \int (3 \xi^2 - r^2) \delta \rho
+		\, d^3x}_{\text{helical quadrupole}}.
+	\label{eq:helical-quadrupole}
+\end{equation}
+
+With the density profile:
+\begin{equation}
+	\underbrace{Q_{\xi\xi} = \rho_{\mathrm{scale}} A_0 \int (3 L^2 x^2
+		- r^2) e^{-r^2/(2R^2)} \mathrm{sech}(x) \, d^3x}
+	_{\text{quadrupole integral}}.
+	\label{eq:quadrupole-integral}
+\end{equation}
+
+The integral evaluates to
+\begin{equation}
+	\boxed{
+		\underbrace{Q_{\xi\xi} = \rho_{\mathrm{scale}} A_0 \left(
+			3 \pi^2 L^2 - 2 \pi^2 R^2 \right) R^2 L}
+		_{\text{gravitational quadrupole}}.
+	}
+	\label{eq:gravitational-quadrupole}
+\end{equation}
+
+The quadrupole moment is non-zero because the breather is elongated
+along the helical direction.
+
+\subsection{The Multipole Hierarchy}
+\label{sec:multipole-hierarchy}
+
+The multipole moments are summarized in Table~\ref{tab:multipoles}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Moment & Expression & Source \\
+		\midrule
+		Electric monopole & $Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}
+		{\rho^2 \chi_\rho} \frac{\pi^2}{3} A_0^3 R^2 L$ & Spin pressure \\
+		Magnetic dipole & $\mathbf{m} = 2\pi^2 \cA_{\mathrm{scale}}
+		A_0 R^2 L \cos(\omega_{\mathrm{osc}} t) \hat{\phi}$ & Spin density \\
+		Gravitational monopole & $M = 2\pi^2 \rho_{\mathrm{scale}}
+		A_0 R^2 L$ & Energy density \\
+		Gravitational quadrupole & $Q_{\xi\xi} = \rho_{\mathrm{scale}}
+		A_0 (3\pi^2 L^2 - 2\pi^2 R^2) R^2 L$ & Elongation \\
+		\bottomrule
+	\end{tabular}
+	\caption{The multipole moments of the helical breather.}
+	\label{tab:multipoles}
+\end{table}
+
+The far field is dominated by the monopole moments (electric and
+gravitational) at large distances. The magnetic dipole is the leading
+time-dependent moment.
+
+\subsection{The Far-Field Potentials}
+\label{sec:far-field-potentials}
+
+The far-field potentials are determined by the multipole moments:
+
+\subsubsection{Electric Potential}
+
+\begin{equation}
+	\underbrace{\Phi_e(r) = \frac{Q}{4\pi\epsilon_0 r}}
+	_{\text{electric potential}}.
+	\label{eq:electric-potential}
+\end{equation}
+
+\subsubsection{Magnetic Field}
+
+\begin{equation}
+	\underbrace{\mathbf{B}(r) = \frac{\mu_0}{4\pi} \frac{3(\mathbf{m}
+			\cdot \hat{\mathbf{r}})\hat{\mathbf{r}} - \mathbf{m}}{r^3}}
+	_{\text{magnetic field}}.
+	\label{eq:magnetic-field}
+\end{equation}
+
+\subsubsection{Gravitational Potential}
+
+\begin{equation}
+	\underbrace{\Phi_g(r) = -\frac{GM}{r}}_{\text{gravitational potential}}.
+	\label{eq:gravitational-potential}
+\end{equation}
+
+The gravitational potential has the standard $1/r$ form. There is no
+Yukawa screening.
+
+\subsection{The Gyromagnetic Ratio}
+\label{sec:gyromagnetic-ratio}
+
+The gyromagnetic ratio is the ratio of the magnetic moment to the
+spin angular momentum:
+\begin{equation}
+	\underbrace{\frac{|\mathbf{m}|}{S} = \frac{2\pi^2
+			\cA_{\mathrm{scale}} A_0 R^2 L}{\hbar/2}}_{\text{gyromagnetic ratio}}.
+	\label{eq:gyromagnetic-ratio}
+\end{equation}
+
+With the spin calibration $S = \hbar/2$:
+\begin{equation}
+	\underbrace{\frac{|\mathbf{m}|}{S} = \frac{4\pi^2
+			\cA_{\mathrm{scale}} A_0 R^2 L}{\hbar}}_{\text{gyromagnetic ratio}}.
+	\label{eq:gyromagnetic-ratio-value}
+\end{equation}
+
+For the electron, the gyromagnetic ratio is $\mu_B/(\hbar/2) = 2e/m_e$.
+The model reproduces this by construction, through the magnetic moment
+constraint.
+
+\subsection{The Charge-to-Mass Ratio}
+\label{sec:charge-to-mass}
+
+The charge-to-mass ratio is
+\begin{equation}
+	\underbrace{\frac{Q}{M} = \alpha_q \frac{\rho_{\mathrm{scale}}^2}
+		{\rho^2 \chi_\rho} \frac{A_0^2}{3}}_{\text{charge-to-mass ratio}}.
+	\label{eq:charge-to-mass}
+\end{equation}
+
+For the electron, the charge-to-mass ratio is $e/m_e$. The model
+reproduces this by construction, through the charge and mass
+constraints.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{The Gravitational Sector}
+\label{sec:gravity}
+% ------------------------------------------------------------
+
+The gravitational sector of the model is described by the dictionary
+that associates the total energy density with the gravitational
+potential. In this section we examine the Poisson equation, the
+far-field potential, and the role of the gravitational constant $G$.
+
+\subsection{The Poisson Equation}
+\label{sec:poisson-equation}
+
+The gravitational potential is sourced by the total energy density:
+\begin{equation}
+	\underbrace{\nabla^2 \Phi_g = \frac{4\pi G}{c_{\mathrm{vortex}}^2}
+		e_{\mathrm{tot}}}_{\text{Poisson equation}},
+	\label{eq:poisson}
+\end{equation}
+where $G$ is the gravitational constant and $e_{\mathrm{tot}}$ is the
+total energy density.
+
+In the far field, the energy density is dominated by the rest mass:
+\begin{equation}
+	\underbrace{e_{\mathrm{tot}} \approx \rho_{\mathrm{scale}}
+		\cA_0 c_{\mathrm{vortex}}^2}_{\text{rest mass}}.
+	\label{eq:energy-density-rest}
+\end{equation}
+
+The Poisson equation becomes
+\begin{equation}
+	\underbrace{\nabla^2 \Phi_g = 4\pi G \rho_{\mathrm{scale}}
+		\cA_0}_{\text{simplified Poisson}}.
+	\label{eq:poisson-simplified}
+\end{equation}
+
+This is the standard Poisson equation with the density deviation as
+the source.
+
+\subsection{The Far-Field Potential}
+\label{sec:far-field-potential}
+
+For a localized source, the far-field potential is
+\begin{equation}
+	\underbrace{\Phi_g(r) = -\frac{GM}{r}}_{\text{far-field potential}},
+	\label{eq:far-field-potential}
+\end{equation}
+where $M$ is the gravitational monopole moment
+\eqref{eq:gravitational-monopole}:
+\begin{equation}
+	\underbrace{M = 2\pi^2 \rho_{\mathrm{scale}} A_0 R^2 L}
+	_{\text{gravitational mass}}.
+	\label{eq:gravitational-mass-later-2}
+\end{equation}
+
+The far-field potential is the standard Newtonian potential. It has the
+$1/r$ behavior characteristic of a point mass.
+
+\subsection{The Multipole Expansion}
+\label{sec:multipole-expansion}
+
+The full gravitational potential is
+\begin{equation}
+	\underbrace{\Phi_g(\mathbf{r}) = -G \int \frac{\rho_{\mathrm{scale}}
+			\cA_0(\mathbf{r}')}{|\mathbf{r} - \mathbf{r}'|} \, d^3x'}
+	_{\text{Newtonian potential}}.
+	\label{eq:newtonian-potential}
+\end{equation}
+
+For $r \gg R$ and $r \gg L$, the multipole expansion is
+\begin{equation}
+	\underbrace{\Phi_g(\mathbf{r}) = -G \left[ \frac{M}{r} +
+		\frac{\mathbf{d} \cdot \hat{\mathbf{r}}}{r^2} + \frac{1}{2}
+		\frac{Q_{ij} \hat{r}_i \hat{r}_j}{r^3} + \ldots \right]}
+	_{\text{multipole expansion}},
+	\label{eq:multipole-expansion}
+\end{equation}
+where $M$ is the total mass (monopole), $\mathbf{d}$ is the dipole
+moment, and $Q_{ij}$ is the quadrupole moment.
+
+\subsection{The Vanishing Dipole}
+\label{sec:vanishing-dipole}
+
+The dipole moment is
+\begin{equation}
+	\underbrace{\mathbf{d} = \int \mathbf{x} \, \delta \rho \, d^3x}
+	_{\text{dipole moment}}.
+	\label{eq:dipole-moment}
+\end{equation}
+
+For the symmetric breather, the density is even in $\xi$ and even in
+$r$. The integral of $\mathbf{x} \, \delta \rho$ vanishes by symmetry:
+\begin{equation}
+	\boxed{
+		\underbrace{\mathbf{d} = 0}_{\text{vanishing dipole}}.
+	}
+	\label{eq:vanishing-dipole}
+\end{equation}
+
+The far field is therefore dominated by the monopole and quadrupole
+terms.
+
+\subsection{The Gravitational Quadrupole}
+\label{sec:gravitational-quadrupole-later-2}
+
+The quadrupole moment is
+\begin{equation}
+	\underbrace{Q_{ij} = \int (3 x_i x_j - r^2 \delta_{ij})
+		\delta \rho \, d^3x}_{\text{quadrupole moment}}.
+	\label{eq:quadrupole-moment}
+\end{equation}
+
+For the breather, the density is elongated along the helical direction.
+The dominant component is
+\begin{equation}
+	\underbrace{Q_{\xi\xi} = \int (3 \xi^2 - r^2) \delta \rho
+		\, d^3x}_{\text{helical quadrupole}}.
+	\label{eq:helical-quadrupole-later-2}
+\end{equation}
+
+From the numerical solution:
+\begin{equation}
+	\underbrace{Q_{\xi\xi} = \rho_{\mathrm{scale}} A_0 \left(
+		3 \pi^2 L^2 - 2 \pi^2 R^2 \right) R^2 L}
+	_{\text{quadrupole value}}.
+	\label{eq:quadrupole-value}
+\end{equation}
+
+The quadrupole moment is non-zero and provides the leading correction
+to the monopole potential at large distances.
+
+\subsection{No Yukawa Screening}
+\label{sec:no-yukawa}
+
+The gravitational potential is not screened. There is no Yukawa
+suppression at large distances.
+
+The reason is that the association
+\begin{equation}
+	\underbrace{\Phi_g \leftrightarrow e_{\mathrm{tot}}}
+	_{\text{dictionary}},
+	\label{eq:dictionary}
+\end{equation}
+is not a literal identification. The gravitational potential and the
+energy density are distinct fields. The energy density sources the
+potential; the potential is not the energy density.
+
+If the association were a literal identification, the Poisson equation
+would become
+\begin{equation}
+	\underbrace{\nabla^2 \Phi_g = \kappa^2 \Phi_g}_{\text{Yukawa equation}},
+	\label{eq:yukawa-equation}
+\end{equation}
+with the Yukawa solution
+\begin{equation}
+	\underbrace{\Phi_g(r) = -\frac{GM}{r} e^{-\kappa r}}
+	_{\text{Yukawa potential}}.
+	\label{eq:yukawa-potential}
+\end{equation}
+
+This is not the correct interpretation. The gravitational potential is
+not screened.
+
+\subsection{The Gravitational Constant}
+\label{sec:gravitational-constant}
+
+The gravitational constant $G$ is a fundamental input of the model. It
+is not derived from the gyron parameters.
+
+The calibration condition is simply
+\begin{equation}
+	\boxed{
+		\underbrace{G = G_{\mathrm{observed}} = 6.674 \times 10^{-11}
+			\, \mathrm{m}^3 \mathrm{kg}^{-1} \mathrm{s}^{-2}}
+		_{\text{gravitational constant}}.
+	}
+	\label{eq:gravitational-constant}
+\end{equation}
+
+This is not a constraint on the gyron parameters. It is a statement
+that the model reproduces the observed gravitational field, given the
+observed value of $G$.
+
+\subsection{The Electric-Gravitational Hierarchy}
+\label{sec:electric-gravitational-hierarchy}
+
+The ratio of the electric to gravitational force between two electrons
+is
+\begin{equation}
+	\underbrace{\frac{F_e}{F_g} = \frac{e^2}{4\pi\epsilon_0 G m_e^2}
+		\approx 4.17 \times 10^{42}}_{\text{electric-gravitational hierarchy}}.
+	\label{eq:hierarchy}
+\end{equation}
+
+This hierarchy is enforced by the charge and mass constraints. It is
+not derived from the spin sector. The model reproduces the hierarchy
+but does not explain it.
+
+\subsection{Comparison with the Standard Model}
+\label{sec:gravity-comparison}
+
+In the Standard Model, $G$ is a fundamental constant that is not
+derived from other parameters. The Standard Model does not explain why
+gravity is so weak compared to the other forces.
+
+The gyron model is in the same position. It reproduces the
+electric-gravitational hierarchy but does not explain it.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Coupling Equations}
+\label{sec:coupling-equations}
+% ------------------------------------------------------------
+
+The model parameters are constrained by the requirement that the
+breather reproduces the observed properties of the electron. In this
+section we state the coupling equations and determine the combinations
+of parameters that they fix.
+
+\subsection{Speed of Light}
+\label{sec:c-speed}
+
+The emergent speed of light is the vortex-spin wave speed:
+\begin{equation}
+	\boxed{
+		\underbrace{c_{\mathrm{vortex}} = \frac{\sqrt{\chi_\rho}}{\tau_s}}
+		_{\text{speed of light}}.
+	}
+	\label{eq:c-constraint}
+\end{equation}
+
+With the measured value $c = 2.998 \times 10^8$ m/s, this fixes
+\begin{equation}
+	\underbrace{\frac{\chi_\rho}{\tau_s^2} = c^2}_{\text{fixed combination}}.
+	\label{eq:c-fixed}
+\end{equation}
+
+\textbf{This fixes one combination: $\chi_\rho/\tau_s^2$.}
+
+\subsection{Mass}
+\label{sec:mass-constraint}
+
+The gravitational mass is the integral of the total energy density:
+\begin{equation}
+	\underbrace{M = 2\pi^2 \rho_{\mathrm{scale}} A_0 R^2 L}
+	_{\text{gravitational mass}}.
+	\label{eq:mass-constraint}
+\end{equation}
+
+Setting $M = m_e$ gives
+\begin{equation}
+	\boxed{
+		\underbrace{\rho_{\mathrm{scale}} A_0 R^2 L =
+			\frac{m_e}{2\pi^2}}_{\text{mass constraint}}.
+	}
+	\label{eq:mass-constraint-explicit}
+\end{equation}
+
+\textbf{This fixes one combination: $\rho_{\mathrm{scale}} A_0 R^2 L$.}
+
+\subsection{Charge}
+\label{sec:charge-constraint}
+
+The electric charge is
+\begin{equation}
+	\underbrace{Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+			\chi_\rho} \frac{\pi^2}{3} A_0^3 R^2 L}_{\text{electric charge}}.
+	\label{eq:charge-constraint}
+\end{equation}
+
+Setting $Q = e$ gives
+\begin{equation}
+	\boxed{
+		\underbrace{\alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+				\chi_\rho} A_0^3 R^2 L =
+			\frac{3e}{\pi^2}}_{\text{charge constraint}}.
+	}
+	\label{eq:charge-constraint-explicit}
+\end{equation}
+
+Using the mass constraint to eliminate $\rho_{\mathrm{scale}} A_0 R^2 L$:
+\begin{equation}
+	\underbrace{\alpha_q \frac{\rho_{\mathrm{scale}}^2}{\rho^2
+			\chi_\rho} A_0^2 = \frac{3e}{\pi^2} \cdot
+		\frac{2\pi^2}{m_e}}_{\text{simplified charge}}.
+	\label{eq:charge-simplified}
+\end{equation}
+
+\textbf{This fixes one combination: $\alpha_q
+	\rho_{\mathrm{scale}}^2 A_0^2/(\rho^2 \chi_\rho)$.}
+
+\subsection{Spin}
+\label{sec:spin-constraint}
+
+The spin angular momentum is
+\begin{equation}
+	\underbrace{S = 4 L \frac{\rho \chi_\rho}{\lambda \tau_a} I_S}
+	_{\text{spin angular momentum}},
+	\label{eq:spin-constraint}
+\end{equation}
+where
+\begin{equation}
+	\underbrace{I_S = \int_0^\infty \int_{-\infty}^\infty \cA_0(r,x)
+		\, r \, dr \, dx}_{\text{spin integral}}.
+	\label{eq:spin-integral}
+\end{equation}
+
+Setting $S = \hbar/2$ gives
+\begin{equation}
+	\boxed{
+		\underbrace{\frac{\rho \chi_\rho}{\lambda \tau_a} =
+			\frac{\hbar}{8 L I_S}}_{\text{spin constraint}}.
+	}
+	\label{eq:spin-constraint-explicit}
+\end{equation}
+
+\textbf{This fixes one combination:
+	$\rho \chi_\rho/(\lambda \tau_a)$.}
+
+\subsection{Planck's Constant}
+\label{sec:planck-constraint}
+
+The effective diffusion coefficient is calibrated to Planck's constant:
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} = D_s + c_2 D_a \mathcal{Q}_{\Hh}
+		= -\frac{\hbar}{2M}}_{\text{Planck constraint}}.
+	\label{eq:planck-constraint}
+\end{equation}
+
+With $M = m_e$:
+\begin{equation}
+	\boxed{
+		\underbrace{D_s + c_2 D_a \mathcal{Q}_{\Hh} =
+			-\frac{\hbar}{2m_e}}_{\text{Planck constraint}}.
+	}
+	\label{eq:planck-constraint-explicit}
+\end{equation}
+
+\textbf{This fixes one combination: $D_s + c_2 D_a
+	\mathcal{Q}_{\Hh}$.}
+
+\subsection{Magnetic Moment}
+\label{sec:magnetic-constraint}
+
+The magnetic moment is
+\begin{equation}
+	\underbrace{|\mathbf{m}| = 2\pi^2 \cA_{\mathrm{scale}} A_0 R^2 L
+		\cos(\omega_{\mathrm{osc}} t)}_{\text{magnetic moment}}.
+	\label{eq:magnetic-constraint}
+\end{equation}
+
+Time-averaging over one oscillation period:
+\begin{equation}
+	\underbrace{\langle |\mathbf{m}| \rangle = \frac{4}{\pi}
+		\cA_{\mathrm{scale}} \pi^2 A_0 R^2 L}_{\text{time-averaged}}.
+	\label{eq:magnetic-averaged}
+\end{equation}
+
+Setting $\langle |\mathbf{m}| \rangle = \mu_B = e\hbar/(2m_e)$ gives
+\begin{equation}
+	\boxed{
+		\underbrace{\cA_{\mathrm{scale}} A_0 R^2 L =
+			\frac{\mu_B \pi}{4 \pi^2}}_{\text{magnetic constraint}}.
+	}
+	\label{eq:magnetic-constraint-explicit}
+\end{equation}
+
+Simplifying:
+\begin{equation}
+	\underbrace{\cA_{\mathrm{scale}} A_0 R^2 L =
+		\frac{e \hbar}{8 \pi m_e}}_{\text{magnetic constraint}}.
+	\label{eq:magnetic-constraint-simplified}
+\end{equation}
+
+\textbf{This fixes one combination: $\cA_{\mathrm{scale}} A_0 R^2 L$.}
+
+\subsection{Summary of Coupling Equations}
+\label{sec:coupling-summary}
+
+The coupling equations are summarized in
+Table~\ref{tab:coupling-equations}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Constraint & Equation & Fixes \\
+		\midrule
+		Speed of light & Eq.~\eqref{eq:c-constraint} &
+		$\chi_\rho/\tau_s^2$ \\
+		Mass & Eq.~\eqref{eq:mass-constraint-explicit} &
+		$\rho_{\mathrm{scale}} A_0 R^2 L$ \\
+		Charge & Eq.~\eqref{eq:charge-constraint-explicit} &
+		$\alpha_q \rho_{\mathrm{scale}}^2 A_0^2/(\rho^2
+		\chi_\rho)$ \\
+		Spin & Eq.~\eqref{eq:spin-constraint-explicit} &
+		$\rho \chi_\rho/(\lambda \tau_a)$ \\
+		Planck & Eq.~\eqref{eq:planck-constraint-explicit} &
+		$D_s + c_2 D_a \mathcal{Q}_{\Hh}$ \\
+		Magnetic moment & Eq.~\eqref{eq:magnetic-constraint-simplified}
+		& $\cA_{\mathrm{scale}} A_0 R^2 L$ \\
+		\bottomrule
+	\end{tabular}
+	\caption{The coupling equations of the model.}
+	\label{tab:coupling-equations}
+\end{table}
+
+Six coupling equations fix six combinations of parameters.
+
+\subsection{The Gauge-Invariant Combinations}
+\label{sec:gauge-invariant-combinations}
+
+Combining the coupling equations with the gauge freedom, the
+gauge-invariant combinations are:
+
+\begin{align}
+	\underbrace{\frac{\chi_\rho}{c^2 \tau_s^2} = 1}
+	_{\text{speed of light}}, \\
+	\underbrace{\frac{\rho_{\mathrm{scale}} A_0 R^2 L}{m_e} =
+		\frac{1}{2\pi^2}}_{\text{mass}}, \\
+	\underbrace{\frac{\alpha_q \rho_{\mathrm{scale}}^2 A_0^2}{\rho^2
+			\chi_\rho} = \frac{3e}{\pi^2 m_e}}_{\text{charge}}, \\
+	\underbrace{\frac{\rho \chi_\rho}{\lambda \tau_a} \frac{8 L
+			I_S}{\hbar} = 1}_{\text{spin}}, \\
+	\underbrace{\frac{D_s + c_2 D_a \mathcal{Q}_{\Hh}}{\hbar/(2m_e)}
+		= -1}_{\text{Planck}}, \\
+	\underbrace{\frac{\cA_{\mathrm{scale}} A_0 R^2 L}{\mu_B \pi /
+			(4\pi^2)} = 1}_{\text{magnetic}}.
+	\label{eq:gauge-invariant-combinations}
+\end{align}
+
+These are the constraints that the model must satisfy.
+
+\subsection{The Residual Freedom}
+\label{sec:residual-freedom}
+
+After applying the six coupling equations and the gauge freedom, the
+model retains a residual freedom. The residual parameters are:
+
+\begin{enumerate}
+	\item \textbf{The ratio $\tau_a/\tau_s$:} the nematic and spin
+	relaxation times.
+	
+	\item \textbf{The ratio $c_4/c_2$:} the higher cross-section
+	moment.
+	
+	\item \textbf{The ratio $D_a/D_s$:} the nematic and isotropic
+	diffusion coefficients.
+	
+	\item \textbf{The overall scale:} the gauge freedom.
+\end{enumerate}
+
+The residual freedom is four-dimensional.
+
+\subsection{The Predictions}
+\label{sec:predictions}
+
+Given the coupling equations, the model predicts:
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Observable & Predicted Value & Status \\
+		\midrule
+		Electron mass & $m_e$ & By construction \\
+		Electron charge & $e$ & By construction \\
+		Electron spin & $\hbar/2$ & By construction \\
+		Magnetic moment & $\mu_B$ & By construction \\
+		Speed of light & $c$ & By construction \\
+		Planck's constant & $\hbar$ & By construction \\
+		Gravitational constant & $G$ & Input \\
+		\bottomrule
+	\end{tabular}
+	\caption{Predictions of the model.}
+	\label{tab:predictions}
+\end{table}
+
+The model reproduces the observed values of the electron properties
+and the speed of light by construction. The gravitational constant $G$
+remains a fundamental input.
+
+\subsection{The Residual Freedom and Predictions}
+\label{sec:residual-predictions}
+
+The residual freedom corresponds to the following physical predictions:
+
+\begin{enumerate}
+	\item \textbf{Mass spectrum:} the quantized masses $M_n = n M_1$
+	depend on the winding number $n$.
+	
+	\item \textbf{Magnetic moment:} the anomalous moment $a_e$ depends
+	on the ratio $c_4/c_2$.
+	
+	\item \textbf{Gravitational wave emission:} the quadrupole
+	radiation depends on the ratio $\tau_a/\tau_s$.
+	
+	\item \textbf{Charge quantization:} the charge is continuous unless
+	a topological invariant is imposed.
+\end{enumerate}
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Residual Freedom}
+\label{sec:residual-freedom-section}
+% ------------------------------------------------------------
+
+After applying the six coupling equations and the gauge freedom, the
+model retains a residual freedom. In this section we identify the
+residual parameters, determine their physical significance, and
+discuss the predictions that depend on them.
+
+\subsection{The Determined Combinations}
+\label{sec:determined-combinations}
+The six calibrated combinations are collected in
+Table~\ref{tab:coupling-equations}; they are not independent predictions.
+
+\subsection{The Free Parameters}
+\label{sec:free-parameters-residual}
+
+The model has twelve gyron parameters. Six combinations are fixed,
+leaving six effective free parameters. One is removed by the gauge
+freedom, leaving \textbf{five effective free parameters}.
+
+The residual parameters are:
+
+\begin{enumerate}
+	\item $\tau_a/\tau_s$ (relaxation ratio):
+	the ratio of the nematic and spin relaxation times.
+	
+	\item $D_a/D_s$ (diffusion ratio):
+	the ratio of the nematic and isotropic diffusion coefficients.
+	
+	\item $c_4/c_2$ (shape ratio):
+	the ratio of the higher cross-section moments.
+	
+	\item $\lambda$ (Jeffery parameter):
+	the aspect ratio of the gyron.
+	
+	\item $\mathcal{Q}_{\Hh}$ (alignment scalar):
+	the projection of the nematic onto the spin direction.
+\end{enumerate}
+
+These five parameters are not fixed by the electron properties. They
+determine the predictions of the model for other observables.
+
+\subsection{The Gauge Freedom}
+\label{sec:gauge-freedom-residual}
+
+The gauge freedom is the residual scale invariance:
+\begin{equation}
+	\underbrace{m \to \lambda m, \quad I_\rho \to \lambda I_\rho,
+		\quad \tau_s \to \lambda \tau_s, \quad \chi_\rho \to \lambda
+		\chi_\rho}_{\text{gauge transformation}}.
+	\label{eq:gauge-transformation-residual}
+\end{equation}
+
+Under this transformation, the physical predictions are invariant:
+\begin{equation}
+	\underbrace{m_e, \, e, \, \mu_e, \, a_e, \, G, \, c, \,
+		M_{\mathrm{active}} \to \text{unchanged}}_{\text{invariance}}.
+	\label{eq:gauge-invariance-residual}
+\end{equation}
+
+The gauge freedom reflects the fact that the microscopic parameters
+are not directly observable; only the macroscopic soliton properties
+are.
+
+\subsection{The Gauge-Invariant Combinations}
+\label{sec:gauge-invariant-residual}
+The six invariant combinations are given explicitly in
+Eq.~\eqref{eq:gauge-invariant-combinations}.
+
+\subsection{The Physical Predictions}
+\label{sec:physical-predictions}
+
+The residual freedom determines the predictions of the model for
+observables beyond the electron properties:
+
+\begin{enumerate}
+	\item \textbf{Mass spectrum:} the quantized masses $M_n = n M_1$
+	depend on the winding number $n$. The quantum of mass is
+	$M_1 = 2\pi \hbar/(v_0 W)$.
+	
+	\item \textbf{Magnetic moment anomaly:} the anomalous moment
+	$a_e = (g-2)/2$ depends on the ratio $c_4/c_2$.
+	
+	\item \textbf{Gravitational wave emission:} the quadrupole
+	radiation depends on the ratio $\tau_a/\tau_s$.
+	
+	\item \textbf{Charge quantization:} the charge is continuous
+	unless a topological invariant is imposed.
+	
+	\item \textbf{Hadron spectrum:} the higher breathers may
+	correspond to hadrons.
+\end{enumerate}
+
+\subsection{The Mass Spectrum}
+\label{sec:mass-spectrum-residual}
+
+The mass spectrum is quantized by the vacuum-matching boundary
+condition:
+\begin{equation}
+	\underbrace{M_n = n M_1}_{\text{mass spectrum}},
+	\qquad
+	\underbrace{M_1 = \frac{2\pi \hbar}{v_0 W}}_{\text{mass quantum}}.
+	\label{eq:mass-spectrum-residual}
+\end{equation}
+
+With the numerical values:
+\begin{equation}
+	\underbrace{M_1 = 3.86 m_e}_{\text{mass quantum}}.
+	\label{eq:mass-quantum-value}
+\end{equation}
+
+The quantized masses are:
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+		$n$ & $M_n/m_e$ \\
+		\midrule
+		1 & 3.86 \\
+		2 & 7.72 \\
+		3 & 11.58 \\
+		4 & 15.44 \\
+		5 & 19.30 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Quantized masses.}
+	\label{tab:quantized-masses}
+\end{table}
+
+The mass spectrum is linear in the winding number $n$.
+
+\subsection{The Anomalous Moment}
+\label{sec:anomalous-moment}
+
+The anomalous moment $a_e = (g-2)/2$ depends on the ratio $c_4/c_2$.
+The leading-order contribution is
+\begin{equation}
+	\underbrace{a_e \sim \frac{c_4}{c_2}}_{\text{anomalous moment}}.
+	\label{eq:anomalous-moment}
+\end{equation}
+
+The observed value is $a_e = 1.16 \times 10^{-3}$. This fixes
+\begin{equation}
+	\underbrace{\frac{c_4}{c_2} \sim 10^{-3}}_{\text{shape ratio}}.
+	\label{eq:shape-ratio}
+\end{equation}
+
+The shape ratio is one of the residual parameters.
+
+\subsection{The Gravitational Wave Emission}
+\label{sec:gravitational-wave}
+
+The breather emits gravitational waves through its oscillating
+quadrupole moment. The power emitted is
+\begin{equation}
+	\underbrace{P_{\mathrm{GW}} = \frac{G}{5 c^5} \left\langle
+		\dddot{Q}_{ij} \dddot{Q}_{ij} \right\rangle}
+	_{\text{gravitational wave power}}.
+	\label{eq:gravitational-wave-power}
+\end{equation}
+
+The quadrupole oscillates with frequency $2\omega_{\mathrm{osc}}$. The
+emission depends on the ratio $\tau_a/\tau_s$.
+
+\subsection{Charge Quantization}
+\label{sec:charge-quantization-residual}
+
+The charge is continuous in the current model:
+\begin{equation}
+	\underbrace{Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+			\chi_\rho} \frac{\pi^2}{3} A_0^3 R^2 L}_{\text{continuous charge}}.
+	\label{eq:continuous-charge}
+\end{equation}
+
+Quantization would require a topological invariant, such as quantized
+helicity or circulation. This is an open problem.
+
+\subsection{The Hadron Spectrum}
+\label{sec:hadron-spectrum}
+
+The higher breathers ($n > 1$) may correspond to hadrons. The mass
+quantum $M_1 = 3.86 m_e \approx 1.97$ MeV is much smaller than the
+pion mass (140 MeV). The hadron spectrum would require a different
+calibration.
+
+Alternatively, the hadrons may correspond to breathers on different
+wave modes (sound, nematic, hybrid). This is a direction for future
+work.
+
+\subsection{What \texorpdfstring{$G$}{G} Remains}
+\label{sec:g-remains}
+
+The gravitational constant $G$ remains a fundamental input:
+\begin{equation}
+	\underbrace{G = G_{\mathrm{observed}} = 6.674 \times 10^{-11}
+		\, \mathrm{m}^3 \mathrm{kg}^{-1} \mathrm{s}^{-2}}
+	_{\text{fundamental input}}.
+	\label{eq:g-input}
+\end{equation}
+
+It is not derived from the gyron parameters. The model reproduces the
+observed gravitational field, given the observed value of $G$.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\part{Discussion}
+% ============================================================
+
+% ------------------------------------------------------------
+\section{What the Model Explains}
+\label{sec:explains}
+% ------------------------------------------------------------
+
+The quaternionic gyron spin fluid is a classical kinetic theory with
+no quantum mechanics, no relativity, and no gauge structure built in.
+Yet it reproduces, at the level of equation form, several features of
+the Standard Model and its gravitational extension. We list here what
+the model explains, with the appropriate caveats.
+
+\subsection{Emergent Relativistic Kinematics}
+\label{sec:explains-relativity}
+
+In the marginal regime
+\begin{equation}
+	\underbrace{v_{\mathrm{th}} = c_{\mathrm{vortex}}}
+	_{\text{marginal condition}},
+	\label{eq:explains-marginal}
+\end{equation}
+the transverse vortex-spin wave satisfies a Lorentz-invariant wave
+equation:
+\begin{equation}
+	\underbrace{\frac{\partial^2 \cS_\perp}{\partial t^2}
+		- c_{\mathrm{vortex}}^2 \nabla^2 \cS_\perp = 0}
+	_{\text{Lorentz-invariant wave equation}}.
+	\label{eq:explains-wave}
+\end{equation}
+
+The emergent structure includes:
+
+\begin{enumerate}
+	\item \textbf{A Minkowski metric:}
+	\begin{equation}
+		\underbrace{ds^2 = -c_{\mathrm{vortex}}^2 dt^2 + dx^2 + dy^2
+			+ dz^2}_{\text{emergent metric}}.
+		\label{eq:explains-metric}
+	\end{equation}
+	
+	\item \textbf{Lorentz transformations:} for a soliton moving with
+	velocity $U$ along the $z$-axis, the energy and momentum
+	transform as
+	\begin{equation}
+		\underbrace{E' = \gamma(E - UP), \qquad P' = \gamma\left(P -
+			\frac{UE}{c_{\mathrm{vortex}}^2}\right)}_{\text{Lorentz
+				transformation}}.
+		\label{eq:explains-lorentz}
+	\end{equation}
+	
+	\item \textbf{The mass-shell condition:}
+	\begin{equation}
+		\underbrace{E^2 - P^2 c_{\mathrm{vortex}}^2 = M^2
+			c_{\mathrm{vortex}}^4}_{\text{mass-shell}}.
+		\label{eq:explains-mass-shell}
+	\end{equation}
+	
+	\item \textbf{Length contraction and time dilation:}
+	\begin{equation}
+		\underbrace{L_z' = \frac{L_z}{\gamma}, \qquad \Delta t' =
+			\gamma \Delta t}_{\text{contraction and dilation}}.
+		\label{eq:explains-contraction}
+	\end{equation}
+\end{enumerate}
+
+This is a genuine structural emergence: the Galilean microscopic
+theory produces a Lorentz-invariant effective description in a
+specific limit. The model explains \emph{why} there is a speed limit
+(it is the vortex-spin wave speed) but not \emph{why} that speed has
+the measured value $3 \times 10^8$ m/s.
+
+\subsection{Maxwell-Form Electromagnetic Sector}
+\label{sec:explains-maxwell}
+
+The vorticity equation has the same form as the magnetic induction
+equation:
+\begin{equation}
+	\underbrace{\partial_t \omega_i + u_j \partial_j \omega_i =
+		\omega_j \partial_j u_i + D_\omega \nabla^2 \omega_i}
+	_{\text{magnetic induction form}},
+	\label{eq:explains-induction}
+\end{equation}
+where $D_\omega$ is an effective magnetic diffusivity.
+
+The antisymmetric stress divergence has the same form as the Lorentz
+force:
+\begin{equation}
+	\underbrace{-\frac{1}{\rho} \partial_j P_{ij}^{\mathrm{anti}}
+		= -\frac{\eta_r}{\rho} \partial_j \omega_{ij}
+		+ \frac{1}{2\rho\tau_s} (\nabla \times \cS)_i + \ldots}
+	_{\text{Lorentz force form}}.
+	\label{eq:explains-lorentz-force}
+\end{equation}
+
+This gives an equation-level analogue of electromagnetism. The model
+explains why the electromagnetic equations have their specific form
+(they are the transport equations of the spin-vorticity sector) but
+not the magnitude of the electric charge or the structure of the gauge
+group.
+
+\subsection{Charge Conjugation and Particle-Antiparticle Structure}
+\label{sec:explains-charge-conjugation}
+
+The discrete $\mathbb{Z}_2$ symmetry
+\begin{equation}
+	\underbrace{\cS_\phi \to -\cS_\phi, \qquad \omega_\phi \to
+		-\omega_\phi, \qquad \delta \Pi^{(s)} \to -\delta \Pi^{(s)}}
+	_{\text{charge conjugation}},
+	\label{eq:explains-c}
+\end{equation}
+gives two branches of the helical soliton with:
+
+\begin{enumerate}
+	\item \textbf{Opposite charge-like signature:}
+	\begin{equation}
+		\underbrace{Q \to -Q}_{\text{charge flip}}.
+		\label{eq:explains-charge-flip}
+	\end{equation}
+	
+	\item \textbf{Opposite magnetic moment:}
+	\begin{equation}
+		\underbrace{\mathbf{m} \to -\mathbf{m}}_{\text{moment flip}}.
+		\label{eq:explains-moment-flip}
+	\end{equation}
+	
+	\item \textbf{Equal gravitational mass:}
+	\begin{equation}
+		\underbrace{M_{e^+} = M_{e^-}}_{\text{mass equality}}.
+		\label{eq:explains-mass-equality}
+	\end{equation}
+\end{enumerate}
+
+The mass equality is enforced by the Bernoulli compensation condition
+along helical streamlines. This is a classical, dynamical analogue of
+charge conjugation, and it provides a mechanism by which particle and
+antiparticle can have equal mass without being imposed by hand.
+
+\subsection{The Quantum Potential Term}
+\label{sec:explains-quantum-potential}
+
+The spin amplitude $\cA = |\cQ|$ satisfies a conservation law with a
+Laplacian term:
+\begin{equation}
+	\underbrace{\partial_t \cA + \partial_j (u_j \cA) =
+		D_{\mathrm{eff}} \nabla^2 \cA + \ldots}
+	_{\text{amplitude equation}},
+	\label{eq:explains-amplitude}
+\end{equation}
+where the effective diffusion coefficient is
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} = D_s + c_2 D_a \mathcal{Q}_{\Hh}}
+	_{\text{effective diffusion}}.
+	\label{eq:explains-d-eff}
+\end{equation}
+
+When $D_{\mathrm{eff}} < 0$, the Laplacian term has the same sign as
+the dispersive term appearing in the Madelung hydrodynamic
+representation of quantum mechanics:
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} \nabla^2 \cA \leftrightarrow
+		-\frac{\hbar^2}{2m^2} \nabla \left( \frac{\nabla^2 \sqrt{\cA}}
+		{\sqrt{\cA}} \right)}_{\text{Madelung form}}.
+	\label{eq:explains-madelung}
+\end{equation}
+
+The sign condition forces a strongly prolate gyron. This is a
+structural emergence of a quantum-potential-like term from a classical
+kinetic theory.
+
+\subsection{Soliton Taxonomy}
+\label{sec:explains-taxonomy}
+
+The balance equations admit a one-parameter family of helical vortex
+solitons parametrized by the pitch $l$. The solution set is partitioned
+into islands by the sign changes of the $l$-dependent corrections. Each
+island corresponds to a distinct family of solitons with different mass
+and moment.
+
+The taxonomy is a qualitative prediction of the model, independent of
+the detailed soliton profile.
+
+\subsection{The Hadron-Like Mass Spectrum}
+\label{sec:explains-mass-spectrum}
+
+The mass spectrum is quantized by the vacuum-matching boundary
+condition:
+\begin{equation}
+	\underbrace{M_n = n M_1}_{\text{mass spectrum}},
+	\qquad
+	\underbrace{M_1 = \frac{2\pi \hbar}{v_0 W}}_{\text{mass quantum}}.
+	\label{eq:explains-mass-spectrum}
+\end{equation}
+
+The quantized masses are:
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+		$n$ & $M_n/m_e$ \\
+		\midrule
+		1 & 3.86 \\
+		2 & 7.72 \\
+		3 & 11.58 \\
+		4 & 15.44 \\
+		5 & 19.30 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Quantized masses of the helical breather.}
+	\label{tab:explains-quantized-masses}
+\end{table}
+
+The mass spectrum is linear in the winding number $n$. This matches
+the qualitative structure of the hadron spectrum, which is
+approximately linear in the radial quantum number.
+
+\subsection{The Electric-Gravitational Hierarchy}
+\label{sec:explains-hierarchy}
+
+The model reproduces the ratio
+\begin{equation}
+	\underbrace{\frac{F_e}{F_g} = \frac{e^2}{4\pi\epsilon_0 G m_e^2}
+		\approx 4.17 \times 10^{42}}_{\text{electric-gravitational
+			hierarchy}}
+	\label{eq:explains-hierarchy}
+\end{equation}
+through the charge and mass constraints. The hierarchy is enforced by
+the charge constraint, not derived from the spin sector. The model
+reproduces the hierarchy but does not explain why the electric and
+gravitational couplings have such different strengths.
+
+\subsection{The Far-Field Multipole Structure}
+\label{sec:explains-multipoles}
+
+The breather has the far-field structure of:
+
+\begin{enumerate}
+	\item \textbf{Electric monopole:}
+	\begin{equation}
+		\underbrace{Q = \alpha_q \frac{\rho_{\mathrm{scale}}^3}{\rho^2
+				\chi_\rho} \frac{\pi^2}{3} A_0^3 R^2 L}
+		_{\text{electric monopole}}.
+		\label{eq:explains-electric}
+	\end{equation}
+	
+	\item \textbf{Magnetic dipole:}
+	\begin{equation}
+		\underbrace{\mathbf{m} = 2\pi^2 \cA_{\mathrm{scale}} A_0 R^2 L
+			\cos(\omega_{\mathrm{osc}} t) \hat{\phi}}
+		_{\text{magnetic dipole}}.
+		\label{eq:explains-magnetic}
+	\end{equation}
+	
+	\item \textbf{Gravitational monopole:}
+	\begin{equation}
+		\underbrace{M = 2\pi^2 \rho_{\mathrm{scale}} A_0 R^2 L}
+		_{\text{gravitational monopole}}.
+		\label{eq:explains-gravitational}
+	\end{equation}
+	
+	\item \textbf{Gravitational quadrupole:}
+	\begin{equation}
+		\underbrace{Q_{\xi\xi} = \rho_{\mathrm{scale}} A_0 \left(
+			3 \pi^2 L^2 - 2 \pi^2 R^2 \right) R^2 L}
+		_{\text{gravitational quadrupole}}.
+		\label{eq:explains-quadrupole}
+	\end{equation}
+\end{enumerate}
+
+This is the standard far-field multipole structure of a localized,
+spinning, charged object.
+
+\subsection{Summary}
+\label{sec:explains-summary}
+
+The model explains:
+
+\begin{enumerate}
+	\item \textbf{Emergent relativistic kinematics:} the transverse
+	vortex-spin wave satisfies a Lorentz-invariant wave equation, with
+	the speed of light identified as the vortex-spin wave speed.
+	
+	\item \textbf{Maxwell-form electromagnetic sector:} the vorticity
+	equation and the antisymmetric stress divergence have the same
+	form as the magnetic induction equation and the Lorentz force.
+	
+	\item \textbf{Charge conjugation and particle-antiparticle
+		structure:} the discrete $\mathbb{Z}_2$ symmetry gives two
+	branches with opposite charge, opposite magnetic moment, and
+	equal gravitational mass.
+	
+	\item \textbf{The quantum potential term:} the spin amplitude
+	equation contains a Laplacian term with the same functional form
+	as the Madelung quantum potential.
+	
+	\item \textbf{Soliton taxonomy:} the balance equations admit a
+	one-parameter family of helical vortex solitons.
+	
+	\item \textbf{Hadron-like mass spectrum:} the mass spectrum is
+	linear in the winding number, matching the qualitative structure
+	of the hadron spectrum.
+	
+	\item \textbf{Electric-gravitational hierarchy:} the ratio
+	$F_e/F_g \approx 4.17 \times 10^{42}$ is reproduced by the
+	charge and mass constraints.
+	
+	\item \textbf{Far-field multipole structure:} the breather has
+	the standard multipole structure of a localized, spinning,
+	charged object.
+\end{enumerate}
+
+What the model does not explain is the subject of the next section.
+
+% ------------------------------------------------------------
+\section{What the Model Does Not Explain}
+\label{sec:not-explains}
+% ------------------------------------------------------------
+
+Equally important is what the model fails to explain. We list these
+here to delimit the scope of the claims.
+
+\subsection{The Values of Fundamental Constants}
+\label{sec:not-values}
+
+The model does not predict the numerical values of:
+
+\begin{itemize}
+	\item the speed of light $c$,
+	\item the elementary charge $e$,
+	\item the electron mass $m_e$,
+	\item the gravitational constant $G$,
+	\item Planck's constant $\hbar$.
+\end{itemize}
+
+Each of these is used as a calibration of the kinetic parameters, not
+derived from first principles. The model is a predictive machine: once
+the kinetic parameters are fixed by the measured anchors, the model
+predicts other observables as functions of the residual freedom. It
+does not predict the anchors themselves.
+
+\subsection{Charge Quantization}
+\label{sec:not-charge}
+
+Charge is continuous in the current model. The charge-like signature
+\begin{equation}
+	\underbrace{Q = \alpha_q \int \delta \Pi^{(s)} \, d^3x}
+	_{\text{continuous charge}}
+	\label{eq:not-charge}
+\end{equation}
+is a real number that varies continuously with the soliton parameters.
+
+Quantization would require a topological invariant, such as quantized
+helicity or circulation. This is not present in the model as
+constructed.
+
+\subsection{Quantum Mechanics}
+\label{sec:not-quantum}
+
+The model does not derive quantum mechanics. It produces a term of the
+same functional form as the Madelung quantum potential in the spin
+amplitude equation, but the term is classical in origin: it comes from
+the spin flux closure, not from a complex wavefunction.
+
+The following quantum features are absent:
+
+\begin{itemize}
+	\item the Schr\"odinger equation,
+	\item the superposition principle,
+	\item quantum interference,
+	\item the Born rule,
+	\item spin-statistics.
+\end{itemize}
+
+The model is a classical analogue of quantum kinematics, not a
+derivation of quantum mechanics.
+
+\subsection{General Relativity}
+\label{sec:not-gr}
+
+The gravitational sector is treated in the Newtonian limit, with the
+Poisson equation for the gravitational potential. The model does not
+derive:
+
+\begin{itemize}
+	\item the Einstein field equations,
+	\item the equivalence principle,
+	\item the geometric structure of general relativity.
+\end{itemize}
+
+A full relativistic treatment of gravity is beyond the scope of the
+current model.
+
+\subsection{The Standard Model Gauge Structure}
+\label{sec:not-sm}
+
+The model reproduces the equation form of electromagnetism but not the
+gauge structure. It does not contain:
+
+\begin{itemize}
+	\item $SU(2) \times U(1)$ symmetry,
+	\item the weak interaction,
+	\item the strong interaction,
+	\item the three generations of fermions.
+\end{itemize}
+
+The structural analogy with the Standard Model (charge conjugation,
+families, emergent gauge structure) is suggestive but not a
+derivation.
+
+\subsection{The Value of \texorpdfstring{$\hbar$}{hbar}}
+\label{sec:not-hbar}
+
+The effective quantum potential coefficient $|D_{\mathrm{eff}}|$
+depends on the kinetic parameters through the combination
+\begin{equation}
+	\underbrace{D_{\mathrm{eff}} = D_s + c_2 D_a \mathcal{Q}_{\Hh}}
+	_{\text{effective diffusion}}.
+	\label{eq:not-d-eff}
+\end{equation}
+
+The model does not predict this combination; it uses the measured
+$\hbar$ to fix it. The origin of $\hbar$ remains unexplained.
+
+\subsection{The Lepton Mass Hierarchy}
+\label{sec:not-lepton}
+
+The mass spectrum of the breather is linear in the winding number:
+\begin{equation}
+	\underbrace{M_n = n M_1}_{\text{linear spectrum}},
+	\label{eq:not-linear}
+\end{equation}
+whereas the observed lepton hierarchy is exponential:
+\begin{equation}
+	\underbrace{\frac{m_\mu}{m_e} \approx 207, \qquad
+		\frac{m_\tau}{m_e} \approx 3477}_{\text{exponential hierarchy}}.
+	\label{eq:not-exponential}
+\end{equation}
+
+The linear spectrum does not match the lepton hierarchy. The breather
+spectrum may correspond instead to the hadron spectrum, which is
+approximately linear in the radial quantum number.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Open Problems}
+\label{sec:open}
+% ------------------------------------------------------------
+
+Several problems remain open and would sharpen the model if resolved.
+
+\subsection{Charge Quantization}
+\label{sec:open-charge}
+
+A topological invariant that quantizes the charge would require either:
+
+\begin{enumerate}
+	\item a quantized helicity, with the charge proportional to the
+	helicity of the soliton:
+	\begin{equation}
+		\underbrace{Q \propto \mathcal{H} = \int \mathbf{u} \cdot
+			(\nabla \times \mathbf{u}) \, d^3x}
+		_{\text{quantized helicity}},
+		\label{eq:open-helicity}
+	\end{equation}
+	or
+	\item a quantized circulation, with the charge proportional to
+	the winding number of the spin field:
+	\begin{equation}
+		\underbrace{Q \propto \oint \cS \cdot d\boldsymbol{\ell}}
+		_{\text{quantized circulation}}.
+		\label{eq:open-circulation}
+	\end{equation}
+\end{enumerate}
+
+Neither is present in the current model. A topological extension would
+require additional structure in the collision integral or the boundary
+conditions.
+
+\subsection{Origin of \texorpdfstring{$\hbar$}{hbar}}
+\label{sec:open-hbar}
+
+The effective quantum potential coefficient
+\begin{equation}
+	\underbrace{|D_{\mathrm{eff}}| = \frac{\hbar}{2M}}
+	_{\text{calibrated value}}
+	\label{eq:open-d-eff}
+\end{equation}
+is a combination of transport coefficients. Whether it can be derived
+from a more fundamental principle (e.g., a minimum action, a
+quantization condition, or a topological constraint) is an open
+question. The model currently uses $\hbar$ as an input.
+
+\subsection{Stability Spectrum}
+\label{sec:open-stability}
+
+The full stability analysis of the helical soliton requires:
+
+\begin{enumerate}
+	\item the reduced ODEs for the amplitudes $(R, L, \Gamma, U, S_0,
+	\hat{a}_0)$ including the nematic terms,
+	\item the fixed point of the reduced system,
+	\item the eigenvalues of the Jacobian at the fixed point.
+\end{enumerate}
+
+This is a finite calculation but has not been carried out. The
+stability spectrum would determine whether the soliton is
+self-stabilizing or requires fine-tuning.
+
+\subsection{Island Structure and Family Number}
+\label{sec:open-islands}
+
+The number and size of the islands of existence require the explicit
+$l$-dependent corrections to the balance equations. Computing these
+would determine whether the model predicts a single soliton family, or
+multiple families analogous to the generations of the Standard Model.
+
+\subsection{Maxwell Consistency}
+\label{sec:open-maxwell}
+
+The equation-level analogy with Maxwell's equations is at the level of
+the induction equation and the Lorentz force. Whether the full Maxwell
+system, including the displacement current and the gauge structure,
+emerges from the gyron model at higher order is an open question.
+
+\subsection{Cherenkov-Like Instability}
+\label{sec:open-cherenkov}
+
+A soliton moving faster than the local average gyron velocity can
+radiate energy into the gyron population through a Cherenkov-like
+mechanism. The radiative decay rate and its effect on the soliton
+lifetime have not been computed.
+
+\subsection{The Residual Gauge Freedom}
+\label{sec:open-gauge}
+
+After calibration by the measured anchors, the model retains about
+three residual degrees of freedom: the relaxation time ratio
+$\tau_a/\tau_s$, the transport ratio $D_a/D_s$, and the shape focusing
+ratio $c_4/c_2$. These parametrize the family of solitons that
+reproduce the anchors. Identifying observables that are sensitive to
+each residual parameter, and checking whether the predictions are
+consistent with measurement, is the natural next step for the model.
+
+\subsection{Connection to Existing Literature}
+\label{sec:open-literature}
+
+The model draws on several existing frameworks:
+
+\begin{itemize}
+	\item Cosserat and Eringen micropolar theory for the couple-stress
+	structure of the antisymmetric stress,
+	\item Relativistic spin hydrodynamics for the covariant
+	formulation of spin transport,
+	\item Doi-Edwards and Hess orientational kinetic theory for the
+	nematic order parameter and anisotropic closure,
+	\item Jeffery orbits for the orientation dynamics of axisymmetric
+	bodies in a flow,
+	\item Burgers vortex for the radial structure of the core,
+	\item Helical vortex and travelling-helix solutions for the
+	background geometry and existence precedents.
+\end{itemize}
+
+A more thorough comparison with these frameworks, and an
+identification of which features are new and which are inherited,
+would clarify the model's place in the literature.
+
+% Concise-edit: redundant recap removed; detailed derivation above retained.
+
+\section{Conclusion}
+\label{sec:conclusion}
+% ------------------------------------------------------------
+
+We have developed a classical kinetic theory for a spin fluid of
+axisymmetric rigid bodies with quaternionic orientation, with a closed
+moment hierarchy that retains explicit dependence on the shape
+parameters $c_2, c_4$ and the Jeffery parameter $\lambda$.
+
+The model produces:
+
+\begin{enumerate}
+	\item A dictionary mapping the fluid fields onto electromagnetic
+	and gravitational analogues, at the level of equation form.
+	
+	\item An emergent speed of light identified with the vortex-spin
+	wave speed, in a marginal regime of thermal synchronization.
+	
+	\item An emergent Lorentz invariance for the transverse spin
+	sector, with the full structure of Minkowski spacetime and the
+	mass-shell condition.
+	
+	\item A term of the same functional form as the Madelung quantum
+	potential in the spin amplitude equation, with a sign condition
+	that forces a strongly prolate gyron.
+	
+	\item A family of helical vortex solitons, classified by charge
+	conjugation, parity, and family number.
+	
+	\item A discrete $\mathbb{Z}_2$ symmetry relating particle and
+	antiparticle branches, with opposite charge and equal mass
+	enforced by the Bernoulli compensation condition.
+\end{enumerate}
+
+The model is classical throughout. It does not derive quantum
+mechanics, general relativity, or the Standard Model. It is a toy
+model in the analogue-gravity tradition: a classical system whose
+effective description reproduces the kinematics and structural features
+of a target physical field, for the purpose of understanding the
+emergence of that field from a simpler substrate.
+
+The predictions of the model are specific and falsifiable. The sign
+condition for the quantum potential term forces a strongly prolate
+gyron. The discrete symmetry relating particle and antiparticle
+requires the collision integral to be chirally symmetric. The mass
+equality between the two branches requires the odd corrections to the
+Bernoulli relation to be below the observed $10^{-9}$ bound. Each of
+these is a checkable condition, and each could falsify the model.
+
+The most pressing open problems are:
+
+\begin{enumerate}
+	\item the stability analysis of the helical soliton,
+	\item the computation of the island structure,
+	\item the quantitative estimate of the mass difference between
+	the two branches,
+	\item the origin of charge quantization,
+	\item the derivation of $\hbar$ from a more fundamental principle.
+\end{enumerate}
+
+These would sharpen the model from a structural description to a
+quantitative one, and would allow direct comparison with the observed
+particle spectrum.
+
+\subsection{Future Directions: Solitons on Other Wave Modes}
+\label{sec:conclusion-future}
+
+The helical vortex solitons analyzed in this paper are constructed on
+the transverse vortex-spin wave of the spin sector. The linear spectrum
+contains additional branches, however: the longitudinal sound mode,
+the spin relaxation mode, the nematic relaxation mode, and the hybrid
+mode that appears only on the soliton background.
+
+Each of these branches is a candidate carrier for a nonlinear localized
+structure. If the nonlinear terms in the transport equations balance
+the dispersion of a given linear branch, a soliton can form around
+that branch: a localized, travelling, particle-like structure whose
+mass, spin, and stability are determined by the nonlinear balance
+rather than put in by hand.
+
+The gyron model therefore suggests a general program: for each branch
+of the linear spectrum, ask whether a nonlinear soliton exists, and if
+so, what its quantum numbers are.
+
+Different solitons on different branches would have different masses,
+spins, and coupling strengths. A sound soliton, for example, would
+carry no electromagnetic charge (the sound mode decouples from the
+spin sector at leading order) but would carry energy and hence a
+gravitational mass; a soliton on the hybrid mode would carry both spin
+and nematic character and would couple to the electromagnetic sector
+through the spin channel.
+
+The spectrum of solitons across the branches could therefore provide a
+structural analogue of a zoo of elementary particles, distinguished by
+which wave mode they are built on, rather than by being introduced as
+separate fields.
+
+We emphasize that this is a program, not a result. The nonlinear
+soliton solutions have not been constructed, and whether they exist,
+what their masses are, and whether they match any observed particle
+spectrum are open questions. But the structure of the gyron model
+suggests that the same kinetic framework that produces the helical
+vortex solitons of this paper may also produce other particle-like
+structures on the remaining branches of the spectrum, and that the
+resulting catalogue could be compared systematically with the observed
+particle content.
+
+\subsection{Closing Remarks}
+\label{sec:conclusion-closing}
+
+The gyron spin fluid is a toy model. It is not a theory of everything.
+It does not derive the Standard Model. But it does show that a
+classical kinetic theory with quaternionic orientation can reproduce
+the kinematics of relativistic spinning particles, the structure of
+electromagnetism, the charge conjugation symmetry, and a
+quantum-potential-like term, all within a single framework. The
+quaternionic formulation is the minimal extension of the real
+three-vector spin fluid that carries the phase, the $SU(2)$ structure,
+and the chirality needed for the Standard Model.
+
+The model is classical throughout. It uses the measured values of
+$\hbar$, $c$, $G$, $m_e$, and $e$ as inputs, and predicts the electron
+mass, charge, spin, and magnetic moment by construction. The
+gravitational constant $G$ remains a fundamental input.
+
+The most important lesson of the model is that the Madelung surface
+--- the constraint surface on which the gyron dynamics reduces to the
+Madelung form --- is a genuine sector of the classical kinetic theory.
+On this surface, the spin amplitude and spin phase gradient satisfy
+the Madelung equations, including a quantum-potential term whose
+coefficient is calibrated to the physical value of $\hbar$. The
+helical breathing soliton is the natural localized solution on this
+surface.
+
+Whether this is a step toward a deeper understanding of the emergence
+of quantum mechanics from classical kinetics, or simply an elegant
+analogy, remains to be seen. The model is offered as a tool for
+exploring the question.
+
+	% ============================================================
+	\clearpage
+\appendix
+	% ============================================================
+	% ============================================================
+	\appendix
+	% ============================================================
+	
+	% ------------------------------------------------------------
+	\section{Glossary of Terms}
+	\label{app:glossary}
+	% ------------------------------------------------------------
+	
+	This appendix defines the fields, coefficients, and parameters of
+	the quaternionic gyron model in words. It is intended as a conceptual
+	map for readers who want to understand what each quantity means, not
+	just how it is denoted.
+	
+	\subsection{Fluid Fields}
+	\label{app:glossary-fields}
+	
+	\begin{description}
+		\item[$\rho$ (mass density).] The mass per unit volume of the
+		gyron fluid. Conserved by the collision operator.
+		
+		\item[$\mathbf{u}$ (fluid velocity).] The mass-weighted mean
+		velocity of the gyrons.
+		
+		\item[$\cQ$ (quaternionic spin density).] The mass-weighted
+		intrinsic angular momentum per unit volume, expressed as a
+		quaternion. Its norm $\cA = |\cQ|$ is the spin amplitude; its
+		argument $U = \cQ/|\cQ|$ is the orientation.
+		
+		\item[$\cP$ (conjugate momentum density).] The conjugate momentum
+		to the orientation quaternion.
+		
+		\item[$P_{ij}$ (translational pressure tensor).] The second moment
+		of the velocity fluctuations about the mean.
+		
+		\item[$\Pi_{ab}$ (quaternionic spin pressure).] The second moment
+		of the spin fluctuations about the mean spin.
+		
+		\item[$Q_{ia}$ (spin flux).] The correlation between velocity
+		fluctuations and spin fluctuations.
+	\end{description}
+	
+	\subsection{Transport Coefficients}
+	\label{app:glossary-transport}
+	
+	\begin{description}
+		\item[$D_s$ (spin diffusion coefficient).] The coefficient of the
+		isotropic part of the spin flux.
+		
+		\item[$D_a$ (nematic spin transport coefficient).] The coefficient
+		of the anisotropic part of the spin flux.
+		
+		\item[$\eta$ (shear viscosity).] The coefficient of the traceless
+		symmetric part of the viscous stress.
+		
+		\item[$\eta_r$ (rotational viscosity).] The coefficient of the
+		antisymmetric part of the viscous stress.
+		
+		\item[$\kappa_2$ (spin-nematic coupling).] The coefficient of the
+		leading nematic correction to the antisymmetric stress.
+	\end{description}
+	
+	\subsection{Relaxation Times}
+	\label{app:glossary-relaxation}
+	
+	\begin{description}
+		\item[$\tau$ (translational relaxation time).] The timescale on
+		which the translational pressure tensor relaxes to its isotropic
+		value.
+		
+		\item[$\tau_s$ (spin relaxation time).] The timescale on which
+		the spin density relaxes to its slaved value.
+		
+		\item[$\tau_a$ (orientational relaxation time).] The timescale on
+		which the nematic order parameter relaxes to isotropy.
+	\end{description}
+	
+	\subsection{Shape Parameters}
+	\label{app:glossary-shape}
+	
+	\begin{description}
+		\item[$a, b$ (gyron dimensions).] The length and transverse scale
+		of the gyron.
+		
+		\item[$\lambda$ (Jeffery parameter).] The dimensionless parameter
+		$\lambda = (a^2 - b^2)/(a^2 + b^2)$ that controls the alignment
+		of an axisymmetric body in a shear flow.
+		
+		\item[$c_2$ (quadrupole cross-section moment).] The coefficient of
+		$P_2$ in the Legendre expansion of the hard-body cross section.
+		
+		\item[$\mathcal{Q}_{\Hh}$ (alignment scalar).] The projection of
+		the nematic order parameter onto the spin direction.
+	\end{description}
+	
+	\subsection{Soliton Parameters}
+	\label{app:glossary-soliton}
+	
+	\begin{description}
+		\item[$R$ (core radius).] The characteristic radial scale of the
+		soliton.
+		
+		\item[$L$ (helical packet length).] The characteristic length of
+		the soliton along the helical direction.
+		
+		\item[$\Gamma$ (circulation).] The line integral of the azimuthal
+		velocity around the core.
+		
+		\item[$l$ (helical pitch).] The pitch of the helical flow.
+		
+		\item[$\xi$ (helical coordinate).] The coordinate $\xi = z -
+		l\theta$ that is constant along helical streamlines.
+	\end{description}
+	
+	\subsection{Derived Quantities}
+	\label{app:glossary-derived}
+	
+	\begin{description}
+		\item[$c_{\mathrm{vortex}}$ (vortex-spin wave speed).] The speed
+		of the transverse spin wave, $c_{\mathrm{vortex}} =
+		\sqrt{\chi_\rho}/\tau_s$. Identified with the emergent speed of
+		light.
+		
+		\item[$D_{\mathrm{eff}}$ (effective Laplacian coefficient).] The
+		coefficient of the $\nabla^2 \cA$ term in the spin amplitude
+		equation.
+		
+		\item[$v_{\mathrm{th}}$ (thermal speed).] The typical gyron
+		thermal speed.
+		
+		\item[$\chi_\rho$ (spin susceptibility).] The response of the
+		spin density to an applied vorticity.
+		
+		\item[$e_{\mathrm{tot}}$ (total energy density).] The sum of
+		translational, spin, and interaction energy densities.
+	\end{description}
+	
+	\subsection{Anchors}
+	\label{app:glossary-anchors}
+	
+	The measured quantities used to calibrate the kinetic parameters:
+	
+	\begin{table}[htbp]
+		\centering
+		\begin{tabular}{@{}lll@{}}
+			\toprule
+			Quantity & Symbol & Value \\
+			\midrule
+			Electron mass & $m_e$ & $9.109 \times 10^{-31}$ kg \\
+			Elementary charge & $e$ & $1.602 \times 10^{-19}$ C \\
+			Electron magnetic moment & $\mu_e$ & $-1.00116 \mu_B$ \\
+			Anomalous moment & $a_e$ & $1.15965 \times 10^{-3}$ \\
+			Gravitational constant & $G$ & $6.674 \times 10^{-11}$
+			m$^3$kg$^{-1}$s$^{-2}$ \\
+			Speed of light & $c$ & $2.998 \times 10^8$ m/s \\
+			Planck's constant & $\hbar$ & $1.055 \times 10^{-34}$ J$\cdot$s \\
+			\bottomrule
+		\end{tabular}
+		\caption{Measured anchors.}
+		\label{tab:anchors}
+	\end{table}
+	
+	% ------------------------------------------------------------
+	\section{Quaternion Algebra}
+	\label{app:quaternion}
+	% ------------------------------------------------------------
+	
+	\subsection{Definition}
+	\label{app:quaternion-definition}
+	
+	A quaternion is written as
+	\begin{equation}
+		q = q_0 + q_1 i + q_2 j + q_3 k,
+		\label{eq:quaternion-def}
+	\end{equation}
+	with multiplication rules
+	\begin{equation}
+		i^2 = j^2 = k^2 = ijk = -1,
+		\label{eq:quaternion-squares}
+	\end{equation}
+	\begin{equation}
+		ij = k, \quad jk = i, \quad ki = j, \quad
+		ji = -k, \quad kj = -i, \quad ik = -j.
+		\label{eq:quaternion-products}
+	\end{equation}
+	
+	\subsection{Conjugation and Norm}
+	\label{app:quaternion-conjugation}
+	
+	The conjugate is
+	\begin{equation}
+		\bar{q} = q_0 - q_1 i - q_2 j - q_3 k,
+		\label{eq:quaternion-conjugate}
+	\end{equation}
+	and the norm is
+	\begin{equation}
+		|q|^2 = q\bar{q} = q_0^2 + q_1^2 + q_2^2 + q_3^2.
+		\label{eq:quaternion-norm}
+	\end{equation}
+	For unit quaternions, $|q| = 1$, so $q \in S^3$.
+	
+	\subsection{Rotation of Vectors}
+	\label{app:quaternion-rotation}
+	
+	A vector $\mathbf{a} \in \Rr^3$ is rotated by $q$ to
+	\begin{equation}
+		\mathbf{a}' = q \, \mathbf{a} \, \bar{q},
+		\label{eq:quaternion-rotation}
+	\end{equation}
+	where $\mathbf{a}$ is embedded as the pure imaginary quaternion
+	$a_1 i + a_2 j + a_3 k$.
+	
+	\subsection{The Maurer-Cartan Form}
+	\label{app:quaternion-maurer-cartan}
+	
+	The Maurer-Cartan form is
+	\begin{equation}
+		\omega_i = \bar{U} \partial_i U \in \mathfrak{su}(2).
+		\label{eq:maurer-cartan-app}
+	\end{equation}
+	Its curvature is
+	\begin{equation}
+		F_{ij} = \partial_i \omega_j - \partial_j \omega_i
+		+ [\omega_i, \omega_j].
+		\label{eq:curvature-app}
+	\end{equation}
+	For a pure gauge configuration, $F_{ij} = 0$.
+	
+	\subsection{The Exponential Map}
+	\label{app:quaternion-exponential}
+	
+	For a unit imaginary quaternion $\hat{n}$ (with $\hat{n}^2 = -1$),
+	the exponential map is
+	\begin{equation}
+		e^{\theta \hat{n}} = \cos\theta + \hat{n} \sin\theta.
+		\label{eq:exponential-map}
+	\end{equation}
+	This is the quaternionic analogue of the complex exponential.
+	
+	\subsection{The Spin Angular Momentum}
+	\label{app:quaternion-spin}
+	
+	The spin angular momentum in quaternion form is
+	\begin{equation}
+		\sigma_i(q) = \mathrm{Im}\left( q \, I_\rho \boldsymbol{\omega} \,
+		\bar{q} \right).
+		\label{eq:spin-angular-momentum-app}
+	\end{equation}
+	
+	% ------------------------------------------------------------
+	\section{The Quaternionic Jeffery Equation}
+	\label{app:jeffery}
+	% ------------------------------------------------------------
+	
+	\subsection{The Jeffery Equation}
+	\label{app:jeffery-equation}
+	
+	For a rigid axisymmetric body in a flow, the orientation evolves by
+	\begin{equation}
+		\dot{q} = \frac{1}{2} \Omega \, q + \lambda \mathcal{S} \, q,
+		\label{eq:jeffery-app}
+	\end{equation}
+	where
+	\begin{equation}
+		\Omega = \Omega_{ij} e_i e_j, \qquad
+		\mathcal{S} = S_{ij} e_i e_j,
+		\label{eq:vorticity-strain-app}
+	\end{equation}
+	are the vorticity and strain-rate tensors embedded as pure imaginary
+	quaternions, and
+	\begin{equation}
+		\lambda = \frac{(a/b)^2 - 1}{(a/b)^2 + 1}
+		\label{eq:jeffery-parameter-app}
+	\end{equation}
+	is the Jeffery shape parameter.
+	
+	\subsection{The Vorticity and Strain Tensors}
+	\label{app:jeffery-tensors}
+	
+	The vorticity and strain-rate tensors are
+	\begin{equation}
+		\Omega_{ij} = \frac{1}{2}(\partial_i u_j - \partial_j u_i), \qquad
+		S_{ij} = \frac{1}{2}(\partial_i u_j + \partial_j u_i).
+		\label{eq:vorticity-strain-def}
+	\end{equation}
+	
+	\subsection{The Jeffery Coupling}
+	\label{app:jeffery-coupling}
+	
+	The Jeffery coupling in the nematic balance equation is
+	\begin{equation}
+		\mathcal{J}_{ab} = \hat{\mathcal{A}}_{ak} \mathcal{S}_{kb}
+		+ \hat{\mathcal{A}}_{bk} \mathcal{S}_{ka}
+		- \tfrac{1}{2} \delta_{ab} \hat{\mathcal{A}}_{kl} \mathcal{S}_{kl}.
+		\label{eq:jeffery-coupling-app}
+	\end{equation}
+	
+	\subsection{The Vector Limit}
+	\label{app:jeffery-vector}
+	
+	In the vector limit, the Jeffery equation reduces to
+	\begin{equation}
+		\dot{\hat{n}}_i = \Omega_{ij} \hat{n}_j + \lambda (\delta_{ij}
+		- \hat{n}_i \hat{n}_j) S_{jk} \hat{n}_k.
+		\label{eq:jeffery-vector}
+	\end{equation}
+	
+	% ------------------------------------------------------------
+	\section{Spectral ODEs and Matrix Elements}
+	\label{app:spectral}
+	% ------------------------------------------------------------
+	
+	\subsection{The Spectral Equations}
+	\label{app:spectral-equations}
+	
+	The spectral equations are
+	\begin{equation}
+		(u_\xi - c) \partial_x A_m = \alpha \left( m A_{m-1}
+		+ (2m+1) A_m + (m+1) A_{m+1} \right)
+		- \beta A_m + \gamma \mathrm{sech}(x) \delta_{m0},
+		\label{eq:spectral-app}
+	\end{equation}
+	where the dimensionless parameters are
+	\begin{align}
+		\tilde{u} &= \frac{u_\xi - c}{c_{\mathrm{vortex}}}, \\
+		\alpha &= \frac{L D_s}{2 c_{\mathrm{vortex}}}, \\
+		\beta &= \frac{L}{\tau_s c_{\mathrm{vortex}}}, \\
+		\gamma &= \frac{L \mathcal{F}_0}{c_{\mathrm{vortex}}}.
+		\label{eq:dimensionless-parameters-app}
+	\end{align}
+	
+	\subsection{The Gaussian-Laguerre Functions}
+	\label{app:spectral-gaussian-laguerre}
+	
+	The Gaussian-Laguerre functions are
+	\begin{equation}
+		\phi_n(r) = e^{-r^2/(2R^2)} L_n(r^2/R^2),
+		\label{eq:gaussian-laguerre-app}
+	\end{equation}
+	where $L_n$ are Laguerre polynomials.
+	
+	\subsection{The Matrix Elements}
+	\label{app:spectral-matrix}
+	
+	The matrix elements of the radial Laplacian are
+	\begin{equation}
+		\mathcal{L}_{mn} = -\frac{n+1}{2} \delta_{m,n+1}
+		- \frac{2n+1}{2} \delta_{mn} - \frac{n}{2} \delta_{m,n-1}.
+		\label{eq:matrix-elements-app}
+	\end{equation}
+	This is a tridiagonal matrix.
+	
+	\subsection{The Analytic Solution}
+	\label{app:spectral-analytic}
+	
+	For the $m = 0$ mode, the analytic solution is
+	\begin{equation}
+		A_0(x) = \frac{\gamma}{\tilde{u}} \int_{-\infty}^{x}
+		e^{-\beta(x - x')/\tilde{u}} \mathrm{sech}(x') \, dx'.
+		\label{eq:analytic-solution-app}
+	\end{equation}
+	
+	% ------------------------------------------------------------
+	\section{Numerical Solution Details}
+	\label{app:numerical}
+	% ------------------------------------------------------------
+	
+	\subsection{The Sparse Linear System}
+	\label{app:numerical-sparse}
+	
+	The spectral equations are discretized on a uniform grid in $x$ with
+	central differences:
+	\begin{equation}
+		\partial_x A_m \approx \frac{A_{m,j+1} - A_{m,j-1}}{2 \Delta x},
+		\label{eq:central-difference-app}
+	\end{equation}
+	where $j$ indexes the grid points.
+	
+	The resulting linear system is
+	\begin{equation}
+		\mathbf{M} \mathbf{A} = \mathbf{F},
+		\label{eq:linear-system-app}
+	\end{equation}
+	where $\mathbf{M}$ is a sparse block-tridiagonal matrix, $\mathbf{A}$
+	is the vector of mode amplitudes, and $\mathbf{F}$ is the driving
+	vector.
+	
+	\subsection{The Dimensionless Parameters}
+	\label{app:numerical-dimensionless}
+	
+	The dimensionless parameters are
+	\begin{align}
+		\tilde{u} &= 1.67 \times 10^{-2}, \\
+		\alpha &= 9.65 \times 10^{-27}, \\
+		\beta &= 3.33 \times 10^{-1}, \\
+		\gamma &= 3.33 \times 10^{-2}.
+		\label{eq:dimensionless-values-app}
+	\end{align}
+	
+	\subsection{The Numerical Method}
+	\label{app:numerical-method}
+	
+	The linear system is solved using a sparse linear solver. The grid
+	parameters are:
+	
+	\begin{table}[htbp]
+		\centering
+		\begin{tabular}{@{}ll@{}}
+			\toprule
+			Parameter & Value \\
+			\midrule
+			Number of modes $N$ & 10 \\
+			Number of grid points $J$ & 2000 \\
+			Domain half-width $x_{\max}$ & 20.0 \\
+			\bottomrule
+		\end{tabular}
+		\caption{Numerical parameters.}
+		\label{tab:numerical-parameters}
+	\end{table}
+	
+	\subsection{The Mode Structure}
+	\label{app:numerical-mode}
+	
+	The mode structure is characterized by:
+	
+	\begin{enumerate}
+		\item \textbf{Single-mode dominance:} the $m = 0$ mode carries
+		essentially all of the amplitude.
+		
+		\item \textbf{Localization:} the mode amplitudes decay to zero
+		at the boundaries.
+		
+		\item \textbf{sech-like profile:} the $m = 0$ mode has a
+		sech-like profile.
+	\end{enumerate}
+	
+	% ------------------------------------------------------------
+	\section{Far-Field Multipole Expansion}
+	\label{app:multipole}
+	% ------------------------------------------------------------
+	
+	\subsection{The Multipole Expansion}
+	\label{app:multipole-expansion}
+	
+	For a localized source, the far-field potential is
+	\begin{equation}
+		\Phi(\mathbf{r}) = -G \left[ \frac{M}{r} + \frac{\mathbf{d}
+			\cdot \hat{\mathbf{r}}}{r^2} + \frac{1}{2}
+		\frac{Q_{ij} \hat{r}_i \hat{r}_j}{r^3} + \ldots \right],
+		\label{eq:multipole-expansion-app}
+	\end{equation}
+	where $M$ is the monopole, $\mathbf{d}$ is the dipole, and $Q_{ij}$ is
+	the quadrupole.
+	
+	\subsection{The Monopole Moments}
+	\label{app:multipole-monopole}
+	
+	The monopole moments are:
+	
+	\begin{itemize}
+		\item \textbf{Gravitational mass:} $M = 2\pi^2
+		\rho_{\mathrm{scale}} A_0 R^2 L$.
+		\item \textbf{Electric charge:} $Q = \alpha_q
+		\frac{\rho_{\mathrm{scale}}^3}{\rho^2 \chi_\rho}
+		\frac{\pi^2}{3} A_0^3 R^2 L$.
+	\end{itemize}
+	
+	\subsection{The Dipole Moment}
+	\label{app:multipole-dipole}
+	
+	The dipole moment is
+	\begin{equation}
+		\mathbf{d} = \int \mathbf{x} \, \delta \rho \, d^3x.
+		\label{eq:dipole-moment-app}
+	\end{equation}
+	For a symmetric breather, $\mathbf{d} = 0$.
+	
+	\subsection{The Quadrupole Moment}
+	\label{app:multipole-quadrupole}
+	
+	The quadrupole moment is
+	\begin{equation}
+		Q_{ij} = \int (3 x_i x_j - r^2 \delta_{ij}) \delta \rho \, d^3x.
+		\label{eq:quadrupole-moment-app}
+	\end{equation}
+	For the breather, the dominant component is
+	\begin{equation}
+		Q_{\xi\xi} = \rho_{\mathrm{scale}} A_0 \left( 3 \pi^2 L^2
+		- 2 \pi^2 R^2 \right) R^2 L.
+		\label{eq:quadrupole-value-app}
+	\end{equation}
+	
+	% ------------------------------------------------------------
+	\section{Cherenkov-Like Instability}
+	\label{app:cherenkov}
+	% ------------------------------------------------------------
+	
+	\subsection{The Threshold}
+	\label{app:cherenkov-threshold}
+	
+	The threshold for radiative decay is
+	\begin{equation}
+		U_{\mathrm{crit}} = v_{\mathrm{th}} = \sqrt{\frac{k_B T}{m}}.
+		\label{eq:cherenkov-threshold}
+	\end{equation}
+	
+	Below this speed, the gyrons can "keep up" with the soliton. Above
+	this speed, the soliton outruns the bulk of the population, creating
+	a wake that carries energy away.
+	
+	\subsection{The Decay Rate}
+	\label{app:cherenkov-decay}
+	
+	The radiative decay rate scales as
+	\begin{equation}
+		\Gamma_{\mathrm{rad}} \sim n \sigma v_{\mathrm{th}}
+		\left( \frac{U^2}{v_{\mathrm{th}}^2} - 1 \right)^{3/2},
+		\qquad U > v_{\mathrm{th}},
+		\label{eq:cherenkov-decay}
+	\end{equation}
+	where $n$ is the gyron density and $\sigma$ is the collision cross
+	section.
+	
+	\subsection{The Total Decay Rate}
+	\label{app:cherenkov-total}
+	
+	The total decay rate is the sum of the intrinsic dissipation and the
+	radiative contribution:
+	\begin{equation}
+		\Gamma_{\mathrm{total}} = \Gamma_{\mathrm{intrinsic}}
+		+ \Gamma_{\mathrm{rad}}(U).
+		\label{eq:cherenkov-total}
+	\end{equation}
+	
+	\subsection{The Relation to the Emergent Speed Limit}
+	\label{app:cherenkov-emergent}
+	
+	In the marginal regime, the Cherenkov threshold coincides with the
+	vortex-spin wave speed:
+	\begin{equation}
+		U_{\mathrm{crit}} = v_{\mathrm{th}} = c_{\mathrm{vortex}}.
+		\label{eq:cherenkov-emergent}
+	\end{equation}
+	
+	The emergent Lorentz invariance therefore comes with a dynamical
+	speed limit whose origin is the interaction between the soliton and
+	the medium.
+	% ============================================================
+\begin{thebibliography}{99}
+
+\bibitem{meno1991}
+F. Meno, \emph{Physics Essays} \textbf{4}, 94 (1991).
+% Full article title and page range require verification.
+
+\bibitem{meno2000}
+F. Meno, \emph{Cats, Atoms, Gyrons, Aether, and the Universe}
+(AEtherpress, Pittsburgh, 2000).
+
+\bibitem{saul2003}
+L. Saul, ``Spin Waves as Metric in a Kinetic Space-Time,''
+\emph{Physics Letters A} \textbf{316}, 385 (2003);
+arXiv:gr-qc/0304063.
+
+\bibitem{saul2015}
+L. A. Saul, ``Statistical Models of Light with an Example in
+Relativistic Dynamics,'' \emph{Electronic Journal of Theoretical Physics}
+\textbf{12}, 205--210 (2015).
+
+\bibitem{kyriazi2013}
+H. Kyriazi, ``A Viable, Atomistic, Kinetic, Unified Aether Theory,''
+viXra:1311.0060v4 (2013).
+
+\bibitem{weng2025}
+Z.-H. Weng, ``Gauge fields and four interactions in the
+trigintaduonion spaces,'' \emph{Mathematical Methods in the Applied
+Sciences} \textbf{48}, 590--604 (2025), doi:10.1002/mma.10345.
+
+		
+		\bibitem{gyron}
+		[Gyron spin fluid paper.]
+		
+		\bibitem{cosserat1909}
+		E. Cosserat and F. Cosserat,
+		\emph{Th\'eorie des corps d\'eformables},
+		Hermann, Paris (1909).
+		
+		\bibitem{curtiss1956}
+		C. F. Curtiss,
+		``Kinetic theory of nonspherical molecules,''
+		\emph{J. Chem. Phys.} \textbf{24}, 225--241 (1956).
+		
+		\bibitem{eringen1966}
+		A. C. Eringen,
+		``Theory of micropolar fluids,''
+		\emph{J. Math. Mech.} \textbf{16}, 1--18 (1966).
+		
+		\bibitem{florkowski2018}
+		W. Florkowski, B. Friman, A. Jaiswal, and E. Speranza,
+		``Relativistic fluid dynamics with spin,''
+		\emph{Phys. Rev. C} \textbf{97}, 041901(R) (2018).
+		
+		\bibitem{barcelo2011}
+		C. Barcelo, S. Liberati, and M. Visser,
+		``Analogue gravity,''
+		\emph{Living Rev. Relativ.} \textbf{14}, 3 (2011).
+		
+		\bibitem{unruh1981}
+	W. G. Unruh,
+	``Experimental black-hole evaporation?,''
+	\emph{Phys. Rev. Lett.} \textbf{46}, 1351--1353 (1981).
+	\newblock doi:10.1103/PhysRevLett.46.1351.
+
+	\bibitem{visser1998}
+	M. Visser,
+	``Acoustic black holes: Horizons, ergospheres, and Hawking radiation,''
+	\emph{Class. Quantum Grav.} \textbf{15}, 1767--1791 (1998).
+	\newblock doi:10.1088/0264-9381/15/7/006.
+
+	\bibitem{vissermolina2010}
+	M. Visser and C. Molina-Par\'is,
+	``Acoustic geometry for general relativistic barotropic irrotational fluid flow,''
+	\emph{New J. Phys.} \textbf{12}, 095014 (2010).
+	\newblock doi:10.1088/1367-2630/12/9/095014.
+
+	\bibitem{jeffery1922}
+		G. B. Jeffery,
+		``The motion of ellipsoidal particles immersed in a viscous fluid,''
+		\emph{Proc. R. Soc. Lond. A} \textbf{102}, 161--179 (1922).
+		
+		\bibitem{bgk1954}
+		P. L. Bhatnagar, E. P. Gross, and M. Krook,
+		``A model for collision processes in gases,''
+		\emph{Phys. Rev.} \textbf{94}, 511--525 (1954).
+		
+		\bibitem{hess1976}
+		S. Hess,
+		``Fokker-Planck-equation approach to flow alignment in liquid crystals,''
+		\emph{Z. Naturforsch. A} \textbf{31}, 1034--1037 (1976).
+		
+		\bibitem{doi1986}
+		M. Doi and S. F. Edwards,
+		\emph{The Theory of Polymer Dynamics},
+		Clarendon Press, Oxford (1986).
+		
+		\bibitem{burgers1948}
+		J. M. Burgers,
+		``A mathematical model illustrating the theory of turbulence,''
+		\emph{Adv. Appl. Mech.} \textbf{1}, 171--199 (1948).
+		
+		\bibitem{madelung1927}
+		E. Madelung,
+		``Quantentheorie in hydrodynamischer Form,''
+		\emph{Z. Phys.} \textbf{40}, 322--326 (1927).
+		
+		\bibitem{takabayasi1952}
+		T. Takabayasi,
+		``On the formulation of quantum mechanics associated with classical pictures,''
+		\emph{Prog. Theor. Phys.} \textbf{8}, 143--182 (1952).
+		
+		\bibitem{xu2022}
+		Y. Xu, I. Delbende, and M. Rossi,
+		``Quasi-equilibrium states for helical vortices with swirl,''
+		\emph{J. Fluid Mech.} \textbf{944}, A24 (2022).
+		
+		\bibitem{davila2022}
+		J. Davila, M. del Pino, M. Musso, and J. Wei,
+		``Travelling helices and the vortex filament conjecture
+		in the incompressible Euler equations,''
+		\emph{Calc. Var. Partial Differential Equations} \textbf{61}, 119 (2022).
+		
+		\bibitem{furey2018}
+		C. Furey,
+		``Standard model physics from an algebra,''
+		[reference].
+		
+		\bibitem{baez2002}
+		J. Baez,
+		``The octonions,''
+		\emph{Bull. Amer. Math. Soc.} \textbf{39}, 145--205 (2002).
+		
+	\end{thebibliography}
+	
+\end{document}
